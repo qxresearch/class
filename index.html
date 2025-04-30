@@ -95,8 +95,8 @@
       document.getElementById("countdown").innerText =
         `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
 
-      const msUntilNextSecond = 1000 - now.getMilliseconds();
-      setTimeout(updateCountdownAccurate, msUntilNextSecond);
+      const msUntilNextSecond = 1000 - now.getMilliseconds(); // Calculate remaining milliseconds until next second
+      setTimeout(updateCountdownAccurate, msUntilNextSecond); // Call updateCountdownAccurate when the next second starts
     }
 
     if (email) {

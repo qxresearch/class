@@ -13,9 +13,22 @@
     .user-info {
       margin: 20px 0;
     }
-    .countdown {
+    .countdown, .class-info {
       font-size: 1.5em;
       font-weight: bold;
+      margin: 10px 0;
+    }
+    .class-link, .notes-link {
+      margin: 10px 0;
+    }
+    .next-class, .time-remaining {
+      margin-top: 20px;
+    }
+    .container {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -82,7 +95,7 @@
       const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-      return { days, hours, minutes, seconds, closestClass };
+      return { days, hours, minutes, seconds, closestClass, closestClassTime };
     }
 
     // Function to get the next class date based on the day and time
@@ -109,28 +122,61 @@
     // Function to display countdown and update every second
     function updateCountdownForUser(email, userSchedule) {
       const userInfoDiv = document.getElementById("user-info");
-      const countdownDiv = document.createElement("div");
-      countdownDiv.classList.add("user-info");
+
+      // Create individual containers for class info
+      const classLinkContainer = document.createElement("div");
+      classLinkContainer.classList.add("container");
+      const notesLinkContainer = document.createElement("div");
+      notesLinkContainer.classList.add("container");
+      const nextClassContainer = document.createElement("div");
+      nextClassContainer.classList.add("container");
+      const timeRemainingContainer = document.createElement("div");
+      timeRemainingContainer.classList.add("container");
 
       // Function to refresh and update the countdown
       function refreshCountdown() {
         const timeRemaining = calculateTimeRemaining(userSchedule);
 
+        // Clear previous content
+        classLinkContainer.innerHTML = '';
+        notesLinkContainer.innerHTML = '';
+        nextClassContainer.innerHTML = '';
+        timeRemainingContainer.innerHTML = '';
+
         if (timeRemaining) {
           const { days, hours, minutes, seconds, closestClass } = timeRemaining;
-          countdownDiv.innerHTML = `
-            <h2>${email}</h2>
-            <p><strong>Next Class:</strong> ${closestClass.day} at ${closestClass.time}</p>
-            <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s remaining</p>
+
+          // Class Link and Notes Link container
+          classLinkContainer.innerHTML = `
+            <h3>Class Links</h3>
             <p><a href="${userSchedule.classLink}" target="_blank">Join Class</a></p>
+          `;
+          notesLinkContainer.innerHTML = `
+            <h3>Notes</h3>
             <p><a href="${userSchedule.notesLink}" target="_blank">View Notes</a></p>
           `;
+
+          // Next Class container
+          nextClassContainer.innerHTML = `
+            <h3>Next Class</h3>
+            <p>${closestClass.day} at ${closestClass.time}</p>
+          `;
+
+          // Time remaining container
+          timeRemainingContainer.innerHTML = `
+            <h3>Time Remaining</h3>
+            <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s</p>
+          `;
         } else {
-          countdownDiv.innerHTML = `<h2>${email}</h2><p>No upcoming class found.</p>`;
+          nextClassContainer.innerHTML = `<h3>Next Class</h3><p>No upcoming class found.</p>`;
         }
 
+        // Append the updated containers
         userInfoDiv.innerHTML = '';  // Clear any previous content
-        userInfoDiv.appendChild(countdownDiv);  // Add the updated countdown
+        userInfoDiv.appendChild(classLinkContainer);
+        userInfoDiv.appendChild(notesLinkContainer);
+        userInfoDiv.appendChild(nextClassContainer);
+        userInfoDiv.appendChild(timeRemainingContainer);
       }
 
       // Update the countdown every second

@@ -67,6 +67,18 @@
   </div>
 
   <script>
+    function extractEmail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("email")) {
+        return urlParams.get("email");
+      }
+
+      // Fallback to path-based email
+      const pathParts = window.location.pathname.split("/");
+      const emailCandidate = pathParts[pathParts.length - 1];
+      return decodeURIComponent(emailCandidate);
+    }
+
     function startCountdown(targetTimeISO) {
       const targetTime = new Date(targetTimeISO);
 
@@ -85,7 +97,7 @@
         const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
         const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-        document.getElementById('countdown').textContent = 
+        document.getElementById('countdown').textContent =
           `${days} days ${hours} hours ${minutes} mins ${seconds} seconds`;
       }
 
@@ -94,11 +106,10 @@
     }
 
     window.onload = function () {
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get("email");
+      const email = extractEmail();
 
       if (!email || !email.includes("@")) {
-        document.getElementById('error').textContent = "Invalid email in URL.";
+        document.getElementById('error').textContent = "Invalid or missing email.";
         return;
       }
 

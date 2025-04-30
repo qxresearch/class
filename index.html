@@ -1,210 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Schedule</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-    }
-    .container {
-      margin: 20px 0;
-      border: 1px solid #ccc;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    .note-tab {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-    }
-    .note-tab a {
-      text-decoration: none;
-      color: #007BFF;
-      font-weight: bold;
-      margin: 0 10px;
-    }
-    .note-tab a:hover {
-      color: #0056b3;
-    }
-    .countdown, .class-info {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .countdown {
-      font-size: 1.8em;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="3.ico">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            height: 100vh;
+            margin: 0;
+            background: #1b1b1b url('blur1.jpg') no-repeat center center;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        .cont {
+            position: relative;
+            width: 430px;
+            max-height: 90vh;
+        }
+
+        .container {
+            position: relative;
+            width: 420px;
+            max-height: 80vh;
+            background: rgba(33, 33, 33, 0.9); /* Darker ash color */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            overflow: auto;
+            z-index: 1;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 12px; /* Reduced size */
+            color: #b0b0b0; /* Grey text */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Space between buttons */
+            margin-top: 15px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            font-size: 14px;
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .randomize-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .randomize-container input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .randomize-container span {
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        .container img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+            filter: invert(200%) sepia(100%) saturate(100%) hue-rotate(180deg);
+        }
+
+        .container #schedule {
+            margin: 15px 0;
+            padding: 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.5em;
+        }
+
+        .note-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-family: 'Space Mono', monospace;
+            color: #b0b0b0;
+            text-align: center;
+        }
+
+        .note-tab strong {
+            color: #a5c4ff; /* Different color for the "Note" text */
+        }
+
+        .class-link, .class-notes, .next-class-time, .countdown {
+            margin-bottom: 15px;
+        }
+
+        .class-link a, .class-notes a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .class-link a:hover, .class-notes a:hover {
+            text-decoration: underline;
+        }
+
+        .countdown {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6347; /* Tomato color for countdown */
+        }
+    </style>
 </head>
 <body>
-
-  <div id="user-info"></div>
-
-  <script>
-    // Schedule data
-    const schedule = {
-      "john@example.com": {
-        classLink: "https://meet.google.com/happy",
-        notesLink: "https://example.com/john-notes",
-        timeZone: "America/New_York", // EST
-        weeklySchedule: [
-          { day: "Wednesday", time: "17:30" },
-          { day: "Thursday", time: "14:00" }
-        ]
-      },
-      "alice@example.com": {
-        classLink: "https://zoom.us/alice-session",
-        notesLink: "https://example.com/alice-notes",
-        timeZone: "Europe/Berlin", // CEST
-        weeklySchedule: [
-          { day: "Tuesday", time: "09:00" },
-          { day: "Friday", time: "12:00" }
-        ]
-      }
-    };
-
-    // Function to calculate time remaining
-    function calculateTimeRemaining(schedule) {
-      const currentTime = new Date();
-      
-      // User's local time zone offset
-      const userTimeZone = schedule.timeZone;
-      const userTime = new Date(currentTime.toLocaleString("en-US", { timeZone: userTimeZone }));
-
-      let closestClassTime = null;
-      let closestClass = null;
-
-      // Loop through the weekly schedule and find the next class
-      for (let i = 0; i < schedule.weeklySchedule.length; i++) {
-        const classSchedule = schedule.weeklySchedule[i];
-        const classDay = classSchedule.day;
-        const classTime = classSchedule.time;
-
-        // Convert day and time to Date object for comparison
-        let classDate = getNextClassDate(classDay, classTime, userTime);
-
-        if (classDate > userTime) {
-          if (!closestClassTime || classDate < closestClassTime) {
-            closestClassTime = classDate;
-            closestClass = classSchedule;
-          }
-        }
-      }
-
-      if (!closestClass) return null;
-
-      const timeDiff = closestClassTime - userTime;
-      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-      return { days, hours, minutes, seconds, closestClass, closestClassTime };
-    }
-
-    // Function to get the next class date based on the day and time
-    function getNextClassDate(day, time, currentTime) {
-      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const targetDayIndex = dayNames.indexOf(day);
-      const currentDayIndex = currentTime.getDay();
-      
-      // Calculate the difference in days
-      let daysUntilClass = targetDayIndex - currentDayIndex;
-      if (daysUntilClass <= 0) {
-        daysUntilClass += 7; // Next week if the class is in the past week
-      }
-
-      // Get the current day's date
-      const classDate = new Date(currentTime);
-      classDate.setDate(classDate.getDate() + daysUntilClass);
-      const [classHours, classMinutes] = time.split(":").map(num => parseInt(num));
-      classDate.setHours(classHours, classMinutes, 0, 0);
-
-      return classDate;
-    }
-
-    // Function to display countdown and update every second
-    function updateCountdownForUser(email, userSchedule) {
-      const userInfoDiv = document.getElementById("user-info");
-
-      // Create individual containers for class info
-      const classLinkContainer = document.createElement("div");
-      classLinkContainer.classList.add("container");
-      const notesLinkContainer = document.createElement("div");
-      notesLinkContainer.classList.add("container");
-      const nextClassContainer = document.createElement("div");
-      nextClassContainer.classList.add("container");
-      const timeRemainingContainer = document.createElement("div");
-      timeRemainingContainer.classList.add("container");
-
-      // Function to refresh and update the countdown
-      function refreshCountdown() {
-        const timeRemaining = calculateTimeRemaining(userSchedule);
-
-        // Clear previous content
-        classLinkContainer.innerHTML = '';
-        notesLinkContainer.innerHTML = '';
-        nextClassContainer.innerHTML = '';
-        timeRemainingContainer.innerHTML = '';
-
-        if (timeRemaining) {
-          const { days, hours, minutes, seconds, closestClass } = timeRemaining;
-
-          // Class Link and Notes Link container
-          classLinkContainer.innerHTML = `
-            <div class="note-tab">
-              <a href="${userSchedule.classLink}" target="_blank"><strong>Join Class</strong></a>
-              <a href="${userSchedule.notesLink}" target="_blank"><strong>View Notes</strong></a>
+    <div class="cont">
+        <div class="container">
+            <img src="toefl.svg" alt="Class Schedule Visual">
+            <hr>
+            
+            <!-- Class Links & Next Class -->
+            <div class="class-link">
+                <strong>Class Link: </strong><a href="#" id="classLink" target="_blank">Click Here for Class</a>
             </div>
-          `;
 
-          // Next Class container
-          nextClassContainer.innerHTML = `
-            <div class="note-tab">
-              <strong>Next Class: </strong>${closestClass.day} at ${closestClass.time}
+            <div class="class-notes">
+                <strong>Class Notes: </strong><a href="#" id="classNotes" target="_blank">Click Here for Notes</a>
             </div>
-          `;
 
-          // Time remaining container
-          timeRemainingContainer.innerHTML = `
-            <div class="countdown">
-              <strong>Time Remaining: </strong>${days}d ${hours}h ${minutes}m ${seconds}s
+            <!-- Next Class & Countdown Timer -->
+            <div id="nextClassTime" class="next-class-time">
+                <strong>Next Class: </strong><span id="nextClassName"></span>
             </div>
-          `;
-        } else {
-          nextClassContainer.innerHTML = `<div class="note-tab"><strong>Next Class</strong><p>No upcoming class found.</p></div>`;
+
+            <div id="countdown" class="countdown"></div>
+
+            <input type="file" id="fileInput" accept=".txt">
+            <label class="randomize-container">
+                <input type="checkbox" id="randomizeCheckbox">
+                <span>Randomize Schedule</span>
+            </label>
+            <div id="schedule"></div>
+
+            <div class="button-container">
+                <button id="nextButton" disabled>Next Class</button>
+                <button id="stopButton" disabled>Stop</button>
+            </div>
+            
+            <div id="noteTab" class="note-tab">
+                <strong>Note:</strong> Upload class schedule file format: class time ; class details
+            </div>
+            <hr>
+            <div class="footer">
+                <span id="attemptedClasses">Classes Attempted: 0</span>
+                <span id="completedClasses">Completed Classes: 0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scheduleList = [];
+        let currentClassIndex = 0;
+        let randomized = false;
+
+        const fileInput = document.getElementById('fileInput');
+        const nextButton = document.getElementById('nextButton');
+        const stopButton = document.getElementById('stopButton');
+        const scheduleElement = document.getElementById('schedule');
+        const noteTab = document.getElementById('noteTab');
+        const randomizeCheckbox = document.getElementById('randomizeCheckbox');
+        const attemptedClassesElement = document.getElementById('attemptedClasses');
+        const completedClassesElement = document.getElementById('completedClasses');
+        const classLink = document.getElementById('classLink');
+        const classNotes = document.getElementById('classNotes');
+        const nextClassName = document.getElementById('nextClassName');
+        const countdownElement = document.getElementById('countdown');
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    scheduleList = content.trim().split('\n').map(line => {
+                        const [time, details] = line.split(';');
+                        return { time: time.trim(), details: details.trim() };
+                    });
+
+                    if (randomizeCheckbox.checked) {
+                        scheduleList = scheduleList.sort(() => Math.random() - 0.5);
+                        randomized = true;
+                    }
+
+                    noteTab.style.display = 'none'; // Hide note tab after file upload
+                    scheduleElement.style.display = 'block';
+                    nextButton.disabled = false;
+                    stopButton.disabled = false;
+                    randomizeCheckbox.style.display = 'none'; // Hide checkbox after file upload
+                    document.querySelector('.button-container').style.display = 'flex'; // Show buttons
+                    fileInput.style.display = 'none'; // Hide file input box after upload
+                    displayNextClass();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        nextButton.addEventListener('click', function() {
+            displayNextClass();
+        });
+
+        stopButton.addEventListener('click', function() {
+            // Stop functionality (can be extended for a stop behavior)
+        });
+
+        function displayNextClass() {
+            if (currentClassIndex < scheduleList.length) {
+                const currentClass = scheduleList[currentClassIndex];
+                scheduleElement.innerHTML = `<strong>${currentClass.time}</strong><br>${currentClass.details}`;
+                
+                classLink.href = `http://example.com/class/${currentClassIndex + 1}`;
+                classNotes.href = `http://example.com/notes/${currentClassIndex + 1}`;
+
+                nextClassName.innerText = currentClass.details;
+
+                // Start countdown for next class
+                const nextClassTime = new Date();
+                nextClassTime.setHours(currentClass.time.split(":")[0], currentClass.time.split(":")[1]);
+                startCountdown(nextClassTime);
+
+                currentClassIndex++;
+                attemptedClassesElement.innerText = `Classes Attempted: ${currentClassIndex}`;
+            } else {
+                scheduleElement.innerText = 'End of Schedule!';
+                countdownElement.innerText = '';
+            }
         }
 
-        // Append the updated containers
-        userInfoDiv.innerHTML = '';  // Clear any previous content
-        userInfoDiv.appendChild(classLinkContainer);
-        userInfoDiv.appendChild(notesLinkContainer);
-        userInfoDiv.appendChild(nextClassContainer);
-        userInfoDiv.appendChild(timeRemainingContainer);
-      }
+        function startCountdown(targetTime) {
+            const interval = setInterval(function() {
+                const now = new Date();
+                const timeDiff = targetTime - now;
+                const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-      // Update the countdown every second
-      refreshCountdown(); // Initial update
-      setInterval(refreshCountdown, 1000); // Update every second
-    }
+                countdownElement.innerText = `Next Class in: ${hours}:${minutes}:${seconds}`;
 
-    // Get email from URL query parameter
-    function getEmailFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('email');
-    }
-
-    // Fetch the schedule and display based on the email query parameter
-    const email = getEmailFromURL();
-    if (email && schedule[email]) {
-      updateCountdownForUser(email, schedule[email]);
-    } else {
-      document.getElementById("user-info").innerHTML = `<p>User not found or invalid email parameter.</p>`;
-    }
-  </script>
-
+                if (timeDiff <= 0) {
+                    clearInterval(interval);
+                    countdownElement.innerText = 'Class Started!';
+                }
+            }, 1000);
+        }
+    </script>
 </body>
 </html>

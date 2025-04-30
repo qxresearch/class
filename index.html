@@ -94,17 +94,17 @@
     }
 
     window.onload = function () {
-      const path = window.location.pathname;
-      const email = decodeURIComponent(path.split("/").pop());
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("email");
 
-      if (!email.includes("@")) {
+      if (!email || !email.includes("@")) {
         document.getElementById('error').textContent = "Invalid email in URL.";
         return;
       }
 
       document.getElementById('email').textContent = email;
 
-      const apiUrl = `https://script.google.com/macros/s/AKfycbwzRTN2fRA1dj891sWoEb6g7jDCaDVuND8Hk90bFJAz20t0WKHbcnlKEHKc21macxNk/exec?email=${email}`;
+      const apiUrl = `https://script.google.com/macros/s/AKfycbwzRTN2fRA1dj891sWoEb6g7jDCaDVuND8Hk90bFJAz20t0WKHbcnlKEHKc21macxNk/exec?email=${encodeURIComponent(email)}`;
 
       fetch(apiUrl)
         .then(response => response.json())
@@ -120,7 +120,7 @@
           document.getElementById('notes-link').textContent = "Class Notes";
           document.getElementById('static-datetime').textContent = data.staticDateTime;
 
-          startCountdown(data.staticDateTime); // pass ISO string to countdown logic
+          startCountdown(data.staticDateTime);
         })
         .catch(error => {
           document.getElementById('error').textContent = "Error fetching data.";

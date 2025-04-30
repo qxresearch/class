@@ -98,13 +98,6 @@
             color: #b0b0b0;
         }
 
-        .container img {
-            width: 150px;
-            height: auto;
-            margin-bottom: 10px;
-            filter: invert(200%) sepia(100%) saturate(100%) hue-rotate(180deg);
-        }
-
         .container #schedule {
             margin: 15px 0;
             padding: 8px;
@@ -129,7 +122,13 @@
             color: #a5c4ff; /* Different color for the "Note" text */
         }
 
-        .class-link, .class-notes, .next-class-time, .countdown {
+        .countdown {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6347; /* Tomato color for countdown */
+        }
+
+        .class-link, .class-notes, .next-class-time {
             margin-bottom: 15px;
         }
 
@@ -153,10 +152,7 @@
 <body>
     <div class="cont">
         <div class="container">
-            <img src="toefl.svg" alt="Class Schedule Visual">
-            <hr>
-            
-            <!-- Class Links & Next Class -->
+            <!-- Next Class & Countdown Timer -->
             <div class="class-link">
                 <strong>Class Link: </strong><a href="#" id="classLink" target="_blank">Click Here for Class</a>
             </div>

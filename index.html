@@ -1,235 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Schedule</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="3.ico">
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            height: 100vh;
-            margin: 0;
-            background: #1b1b1b url('blur1.jpg') no-repeat center center;
-            background-size: cover;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-        }
-
-        .cont {
-            position: relative;
-            width: 430px;
-            max-height: 90vh;
-        }
-
-        .container {
-            position: relative;
-            width: 420px;
-            max-height: 80vh;
-            background: rgba(33, 33, 33, 0.9); /* Darker ash color */
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            color: white;
-            text-align: center;
-            overflow: auto;
-            z-index: 1;
-        }
-
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            font-size: 12px; /* Reduced size */
-            color: #b0b0b0; /* Grey text */
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px; /* Space between buttons */
-            margin-top: 15px;
-        }
-
-        button {
-            background-color: #3498db;
-            color: white;
-            font-size: 14px;
-            padding: 8px 15px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-            transform: scale(1.05);
-        }
-
-        button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        .container #schedule {
-            margin: 15px 0;
-            padding: 8px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            font-size: 1.5em;
-        }
-
-        .note-tab {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            font-family: 'Space Mono', monospace;
-            color: #b0b0b0;
-            text-align: center;
-        }
-
-        .note-tab strong {
-            color: #a5c4ff; /* Different color for the "Note" text */
-        }
-
-        .countdown {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff6347; /* Tomato color for countdown */
-        }
-
-        .class-link, .class-notes, .next-class-time {
-            margin-bottom: 15px;
-        }
-
-        .class-link a, .class-notes a {
-            color: #3498db;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .class-link a:hover, .class-notes a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Schedule</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .user-info {
+      margin: 20px 0;
+    }
+    .countdown, .class-info {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .class-link, .notes-link {
+      margin: 10px 0;
+    }
+    .next-class, .time-remaining {
+      margin-top: 20px;
+    }
+    .container {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-    <div class="cont">
-        <div class="container">
-            <!-- Next Class & Countdown Timer -->
-            <div class="class-link">
-                <strong>Class Link: </strong><a href="#" id="classLink" target="_blank">Click Here for Class</a>
-            </div>
 
-            <div class="class-notes">
-                <strong>Class Notes: </strong><a href="#" id="classNotes" target="_blank">Click Here for Notes</a>
-            </div>
+  <div id="user-info"></div>
 
-            <!-- Next Class & Countdown Timer -->
-            <div id="nextClassTime" class="next-class-time">
-                <strong>Next Class: </strong><span id="nextClassName"></span>
-            </div>
+  <script>
+    // Schedule data
+    const schedule = {
+      "john@example.com": {
+        classLink: "https://meet.google.com/happy",
+        notesLink: "https://example.com/john-notes",
+        timeZone: "America/New_York", // EST
+        weeklySchedule: [
+          { day: "Wednesday", time: "17:30" },
+          { day: "Thursday", time: "14:00" }
+        ]
+      },
+      "alice@example.com": {
+        classLink: "https://zoom.us/alice-session",
+        notesLink: "https://example.com/alice-notes",
+        timeZone: "Europe/Berlin", // CEST
+        weeklySchedule: [
+          { day: "Tuesday", time: "09:00" },
+          { day: "Friday", time: "12:00" }
+        ]
+      }
+    };
 
-            <div id="countdown" class="countdown"></div>
+    // Function to calculate time remaining
+    function calculateTimeRemaining(schedule) {
+      const currentTime = new Date();
+      
+      // User's local time zone offset
+      const userTimeZone = schedule.timeZone;
+      const userTime = new Date(currentTime.toLocaleString("en-US", { timeZone: userTimeZone }));
 
-            <div class="button-container">
-                <button id="nextButton" disabled>Next Class</button>
-                <button id="stopButton" disabled>Stop</button>
-            </div>
-            
-            <div id="noteTab" class="note-tab">
-                <strong>Note:</strong> Set up your class schedule directly in the script.
-            </div>
-            <hr>
-            <div class="footer">
-                <span id="attemptedClasses">Classes Attempted: 0</span>
-                <span id="completedClasses">Completed Classes: 0</span>
-            </div>
-        </div>
-    </div>
+      let closestClassTime = null;
+      let closestClass = null;
 
-    <script>
-        let scheduleList = [
-            { time: '10:00', details: 'Math 101' },
-            { time: '12:00', details: 'Physics 201' },
-            { time: '14:00', details: 'Chemistry 301' }
-        ];
-        let currentClassIndex = 0;
+      // Loop through the weekly schedule and find the next class
+      for (let i = 0; i < schedule.weeklySchedule.length; i++) {
+        const classSchedule = schedule.weeklySchedule[i];
+        const classDay = classSchedule.day;
+        const classTime = classSchedule.time;
 
-        const nextButton = document.getElementById('nextButton');
-        const stopButton = document.getElementById('stopButton');
-        const scheduleElement = document.getElementById('schedule');
-        const noteTab = document.getElementById('noteTab');
-        const attemptedClassesElement = document.getElementById('attemptedClasses');
-        const completedClassesElement = document.getElementById('completedClasses');
-        const classLink = document.getElementById('classLink');
-        const classNotes = document.getElementById('classNotes');
-        const nextClassName = document.getElementById('nextClassName');
-        const countdownElement = document.getElementById('countdown');
+        // Convert day and time to Date object for comparison
+        let classDate = getNextClassDate(classDay, classTime, userTime);
 
-        nextButton.addEventListener('click', function() {
-            displayNextClass();
-        });
+        if (classDate > userTime) {
+          if (!closestClassTime || classDate < closestClassTime) {
+            closestClassTime = classDate;
+            closestClass = classSchedule;
+          }
+        }
+      }
 
-        stopButton.addEventListener('click', function() {
-            // Stop functionality (can be extended for a stop behavior)
-        });
+      if (!closestClass) return null;
 
-        function displayNextClass() {
-            if (currentClassIndex < scheduleList.length) {
-                const currentClass = scheduleList[currentClassIndex];
-                nextClassName.innerText = currentClass.details;
-                scheduleElement.innerHTML = `<strong>${currentClass.time}</strong><br>${currentClass.details}`;
+      const timeDiff = closestClassTime - userTime;
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-                classLink.href = `http://example.com/class/${currentClassIndex + 1}`;
-                classNotes.href = `http://example.com/notes/${currentClassIndex + 1}`;
+      return { days, hours, minutes, seconds, closestClass, closestClassTime };
+    }
 
-                // Start countdown for next class
-                const nextClassTime = new Date();
-                nextClassTime.setHours(currentClass.time.split(":")[0], currentClass.time.split(":")[1]);
-                startCountdown(nextClassTime);
+    // Function to get the next class date based on the day and time
+    function getNextClassDate(day, time, currentTime) {
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const targetDayIndex = dayNames.indexOf(day);
+      const currentDayIndex = currentTime.getDay();
+      
+      // Calculate the difference in days
+      let daysUntilClass = targetDayIndex - currentDayIndex;
+      if (daysUntilClass <= 0) {
+        daysUntilClass += 7; // Next week if the class is in the past week
+      }
 
-                currentClassIndex++;
-                attemptedClassesElement.innerText = `Classes Attempted: ${currentClassIndex}`;
-            } else {
-                scheduleElement.innerText = 'End of Schedule!';
-                countdownElement.innerText = '';
-            }
+      // Get the current day's date
+      const classDate = new Date(currentTime);
+      classDate.setDate(classDate.getDate() + daysUntilClass);
+      const [classHours, classMinutes] = time.split(":").map(num => parseInt(num));
+      classDate.setHours(classHours, classMinutes, 0, 0);
+
+      return classDate;
+    }
+
+    // Function to display countdown and update every second
+    function updateCountdownForUser(email, userSchedule) {
+      const userInfoDiv = document.getElementById("user-info");
+
+      // Create individual containers for class info
+      const classLinkContainer = document.createElement("div");
+      classLinkContainer.classList.add("container");
+      const notesLinkContainer = document.createElement("div");
+      notesLinkContainer.classList.add("container");
+      const nextClassContainer = document.createElement("div");
+      nextClassContainer.classList.add("container");
+      const timeRemainingContainer = document.createElement("div");
+      timeRemainingContainer.classList.add("container");
+
+      // Function to refresh and update the countdown
+      function refreshCountdown() {
+        const timeRemaining = calculateTimeRemaining(userSchedule);
+
+        // Clear previous content
+        classLinkContainer.innerHTML = '';
+        notesLinkContainer.innerHTML = '';
+        nextClassContainer.innerHTML = '';
+        timeRemainingContainer.innerHTML = '';
+
+        if (timeRemaining) {
+          const { days, hours, minutes, seconds, closestClass } = timeRemaining;
+
+          // Class Link and Notes Link container
+          classLinkContainer.innerHTML = `
+            <h3>Class Links</h3>
+            <p><a href="${userSchedule.classLink}" target="_blank">Join Class</a></p>
+          `;
+          notesLinkContainer.innerHTML = `
+            <h3>Notes</h3>
+            <p><a href="${userSchedule.notesLink}" target="_blank">View Notes</a></p>
+          `;
+
+          // Next Class container
+          nextClassContainer.innerHTML = `
+            <h3>Next Class</h3>
+            <p>${closestClass.day} at ${closestClass.time}</p>
+          `;
+
+          // Time remaining container
+          timeRemainingContainer.innerHTML = `
+            <h3>Time Remaining</h3>
+            <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s</p>
+          `;
+        } else {
+          nextClassContainer.innerHTML = `<h3>Next Class</h3><p>No upcoming class found.</p>`;
         }
 
-        function startCountdown(targetTime) {
-            const interval = setInterval(function() {
-                const now = new Date();
-                const timeDiff = targetTime - now;
-                const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        // Append the updated containers
+        userInfoDiv.innerHTML = '';  // Clear any previous content
+        userInfoDiv.appendChild(classLinkContainer);
+        userInfoDiv.appendChild(notesLinkContainer);
+        userInfoDiv.appendChild(nextClassContainer);
+        userInfoDiv.appendChild(timeRemainingContainer);
+      }
 
-                countdownElement.innerText = `Next Class in: ${hours}:${minutes}:${seconds}`;
+      // Update the countdown every second
+      refreshCountdown(); // Initial update
+      setInterval(refreshCountdown, 1000); // Update every second
+    }
 
-                if (timeDiff <= 0) {
-                    clearInterval(interval);
-                    countdownElement.innerText = 'Class Started!';
-                }
-            }, 1000);
-        }
+    // Get email from URL query parameter
+    function getEmailFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('email');
+    }
 
-        // Initialize first class
-        displayNextClass();
-    </script>
+    // Fetch the schedule and display based on the email query parameter
+    const email = getEmailFromURL();
+    if (email && schedule[email]) {
+      updateCountdownForUser(email, schedule[email]);
+    } else {
+      document.getElementById("user-info").innerHTML = `<p>User not found or invalid email parameter.</p>`;
+    }
+  </script>
+
 </body>
 </html>

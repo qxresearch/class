@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            font-size: 18px;
+            margin: 15px 0;
+        }
+        #countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .link {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Class Schedule</h1>
+        <p><strong>Class Link:</strong> <a id="classLink" class="link" href="#">Loading...</a></p>
+        <p><strong>Notes Link:</strong> <a id="notesLink" class="link" href="#">Loading...</a></p>
+        <p><strong>Schedule:</strong> <span id="schedule">Loading...</span></p>
+        <p id="countdown">Next Class: Loading...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

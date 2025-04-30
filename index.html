@@ -93,7 +93,6 @@
       let daysUntilClass = targetDayIndex - currentDayIndex;
       if (daysUntilClass <= 0) {
         daysUntilClass += 7; // Next week if the class is in the past week
-
       }
 
       // Get the current day's date
@@ -105,7 +104,7 @@
       return classDate;
     }
 
-    // Displaying the countdown for each user
+    // Displaying the countdown for a user based on email query parameter
     function displayCountdownForUser(email, userSchedule) {
       const timeRemaining = calculateTimeRemaining(userSchedule);
       const userInfoDiv = document.getElementById("user-info");
@@ -128,9 +127,18 @@
       userInfoDiv.appendChild(userDiv);
     }
 
-    // Loop through all the users in the schedule and display their information
-    for (let email in schedule) {
+    // Get email from URL query parameter
+    function getEmailFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('email');
+    }
+
+    // Fetch the schedule and display based on the email query parameter
+    const email = getEmailFromURL();
+    if (email && schedule[email]) {
       displayCountdownForUser(email, schedule[email]);
+    } else {
+      document.getElementById("user-info").innerHTML = `<p>User not found or invalid email parameter.</p>`;
     }
 
   </script>

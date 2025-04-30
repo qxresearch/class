@@ -82,22 +82,6 @@
             cursor: not-allowed;
         }
 
-        .randomize-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 15px 0;
-        }
-
-        .randomize-container input[type="checkbox"] {
-            margin-right: 8px;
-        }
-
-        .randomize-container span {
-            font-size: 14px;
-            color: #b0b0b0;
-        }
-
         .container #schedule {
             margin: 15px 0;
             padding: 8px;
@@ -141,12 +125,6 @@
         .class-link a:hover, .class-notes a:hover {
             text-decoration: underline;
         }
-
-        .countdown {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff6347; /* Tomato color for countdown */
-        }
     </style>
 </head>
 <body>
@@ -168,20 +146,13 @@
 
             <div id="countdown" class="countdown"></div>
 
-            <input type="file" id="fileInput" accept=".txt">
-            <label class="randomize-container">
-                <input type="checkbox" id="randomizeCheckbox">
-                <span>Randomize Schedule</span>
-            </label>
-            <div id="schedule"></div>
-
             <div class="button-container">
                 <button id="nextButton" disabled>Next Class</button>
                 <button id="stopButton" disabled>Stop</button>
             </div>
             
             <div id="noteTab" class="note-tab">
-                <strong>Note:</strong> Upload class schedule file format: class time ; class details
+                <strong>Note:</strong> Set up your class schedule directly in the script.
             </div>
             <hr>
             <div class="footer">
@@ -192,51 +163,23 @@
     </div>
 
     <script>
-        let scheduleList = [];
+        let scheduleList = [
+            { time: '10:00', details: 'Math 101' },
+            { time: '12:00', details: 'Physics 201' },
+            { time: '14:00', details: 'Chemistry 301' }
+        ];
         let currentClassIndex = 0;
-        let randomized = false;
 
-        const fileInput = document.getElementById('fileInput');
         const nextButton = document.getElementById('nextButton');
         const stopButton = document.getElementById('stopButton');
         const scheduleElement = document.getElementById('schedule');
         const noteTab = document.getElementById('noteTab');
-        const randomizeCheckbox = document.getElementById('randomizeCheckbox');
         const attemptedClassesElement = document.getElementById('attemptedClasses');
         const completedClassesElement = document.getElementById('completedClasses');
         const classLink = document.getElementById('classLink');
         const classNotes = document.getElementById('classNotes');
         const nextClassName = document.getElementById('nextClassName');
         const countdownElement = document.getElementById('countdown');
-
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const content = e.target.result;
-                    scheduleList = content.trim().split('\n').map(line => {
-                        const [time, details] = line.split(';');
-                        return { time: time.trim(), details: details.trim() };
-                    });
-
-                    if (randomizeCheckbox.checked) {
-                        scheduleList = scheduleList.sort(() => Math.random() - 0.5);
-                        randomized = true;
-                    }
-
-                    noteTab.style.display = 'none'; // Hide note tab after file upload
-                    scheduleElement.style.display = 'block';
-                    nextButton.disabled = false;
-                    stopButton.disabled = false;
-                    randomizeCheckbox.style.display = 'none'; // Hide checkbox after file upload
-                    document.querySelector('.button-container').style.display = 'flex'; // Show buttons
-                    fileInput.style.display = 'none'; // Hide file input box after upload
-                    displayNextClass();
-                };
-                reader.readAsText(file);
-            }
-        });
 
         nextButton.addEventListener('click', function() {
             displayNextClass();
@@ -249,12 +192,11 @@
         function displayNextClass() {
             if (currentClassIndex < scheduleList.length) {
                 const currentClass = scheduleList[currentClassIndex];
+                nextClassName.innerText = currentClass.details;
                 scheduleElement.innerHTML = `<strong>${currentClass.time}</strong><br>${currentClass.details}`;
-                
+
                 classLink.href = `http://example.com/class/${currentClassIndex + 1}`;
                 classNotes.href = `http://example.com/notes/${currentClassIndex + 1}`;
-
-                nextClassName.innerText = currentClass.details;
 
                 // Start countdown for next class
                 const nextClassTime = new Date();
@@ -285,6 +227,9 @@
                 }
             }, 1000);
         }
+
+        // Initialize first class
+        displayNextClass();
     </script>
 </body>
 </html>

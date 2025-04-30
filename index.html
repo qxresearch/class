@@ -1,113 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Next Class Info</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Schedule</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f9f9f9;
-      color: #333;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .user-info {
+      margin: 20px 0;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .info {
-      margin-bottom: 1rem;
-    }
-    .label {
+    .countdown {
+      font-size: 1.5em;
       font-weight: bold;
-    }
-    a {
-      color: #0066cc;
-    }
-    #countdown {
-      font-size: 1.2rem;
-      color: #007700;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Next Class Details</h1>
-    <div class="info"><span class="label">Class Link:</span> <a id="classLink" href="#" target="_blank">Loading...</a></div>
-    <div class="info"><span class="label">Notes Link:</span> <a id="notesLink" href="#" target="_blank">Loading...</a></div>
-    <div class="info"><span class="label">Class Time:</span> <span id="staticDateTime">Loading...</span></div>
-    <div class="info"><span class="label">Time Remaining:</span> <span id="countdown">Calculating...</span></div>
-  </div>
 
+  <div id="user-info"></div>
+  
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-
-    let targetTime = null;
-
-    async function fetchData() {
-      try {
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbwzRTN2fRA1dj891sWoEb6g7jDCaDVuND8Hk90bFJAz20t0WKHbcnlKEHKc21macxNk/exec?email=${encodeURIComponent(email)}`);
-        const data = await response.json();
-
-        if (data.error) {
-          document.body.innerHTML = `<p style="color:red;">${data.error}</p>`;
-          return;
-        }
-
-        document.getElementById("classLink").href = data.classLink;
-        document.getElementById("classLink").textContent = data.classLink;
-        document.getElementById("notesLink").href = data.notesLink;
-        document.getElementById("notesLink").textContent = data.notesLink;
-        document.getElementById("staticDateTime").textContent = data.staticDateTime;
-
-        // Store the class date and time
-        targetTime = new Date(data.staticDateTime);
-        updateCountdown();
-
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.body.innerHTML = `<p style="color:red;">Failed to fetch class info.</p>`;
+    // Schedule data
+    const schedule = {
+      "john@example.com": {
+        classLink: "https://meet.google.com/happy",
+        notesLink: "https://example.com/john-notes",
+        timeZone: "America/New_York", // EST
+        weeklySchedule: [
+          { day: "Wednesday", time: "17:30" },
+          { day: "Thursday", time: "14:00" }
+        ]
+      },
+      "alice@example.com": {
+        classLink: "https://zoom.us/alice-session",
+        notesLink: "https://example.com/alice-notes",
+        timeZone: "Europe/Berlin", // CEST
+        weeklySchedule: [
+          { day: "Tuesday", time: "09:00" },
+          { day: "Friday", time: "12:00" }
+        ]
       }
-    }
+    };
 
-    // This function will calculate the time difference based on the API time and the user's current time
-    function updateCountdown() {
-      setInterval(function() {
-        const now = new Date();
-        
-        // Calculate the difference in milliseconds
-        const timeDifference = targetTime - now;
+    // Function to calculate time remaining
+    function calculateTimeRemaining(schedule) {
+      const currentTime = new Date();
 
-        if (timeDifference <= 0) {
-          document.getElementById("countdown").innerText = "Class has started!";
-          return;
+      // User's local time zone offset
+      const userTimeZone = schedule.timeZone;
+      const userTime = new Date(currentTime.toLocaleString("en-US", { timeZone: userTimeZone }));
+
+      let closestClassTime = null;
+      let closestClass = null;
+
+      // Loop through the weekly schedule and find the next class
+      for (let i = 0; i < schedule.weeklySchedule.length; i++) {
+        const classSchedule = schedule.weeklySchedule[i];
+        const classDay = classSchedule.day;
+        const classTime = classSchedule.time;
+
+        // Convert day and time to Date object for comparison
+        let classDate = getNextClassDate(classDay, classTime, userTime);
+
+        if (classDate > userTime) {
+          if (!closestClassTime || classDate < closestClassTime) {
+            closestClassTime = classDate;
+            closestClass = classSchedule;
+          }
         }
+      }
 
-        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
-        const seconds = Math.floor((timeDifference / 1000) % 60);
+      if (!closestClass) return null;
 
-        document.getElementById("countdown").innerText =
-          `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+      const timeDiff = closestClassTime - userTime;
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-      }, 1000); // Update every second
+      return { days, hours, minutes, seconds, closestClass };
     }
 
-    if (email) {
-      fetchData();
-    } else {
-      document.body.innerHTML = `<p style="color:red;">Missing email parameter in URL.</p>`;
+    // Function to get the next class date based on the day and time
+    function getNextClassDate(day, time, currentTime) {
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const targetDayIndex = dayNames.indexOf(day);
+      const currentDayIndex = currentTime.getDay();
+      
+      // Calculate the difference in days
+      let daysUntilClass = targetDayIndex - currentDayIndex;
+      if (daysUntilClass <= 0) {
+        daysUntilClass += 7; // Next week if the class is in the past week
+
+      }
+
+      // Get the current day's date
+      const classDate = new Date(currentTime);
+      classDate.setDate(classDate.getDate() + daysUntilClass);
+      const [classHours, classMinutes] = time.split(":").map(num => parseInt(num));
+      classDate.setHours(classHours, classMinutes, 0, 0);
+
+      return classDate;
     }
+
+    // Displaying the countdown for each user
+    function displayCountdownForUser(email, userSchedule) {
+      const timeRemaining = calculateTimeRemaining(userSchedule);
+      const userInfoDiv = document.getElementById("user-info");
+      const userDiv = document.createElement("div");
+      userDiv.classList.add("user-info");
+
+      if (timeRemaining) {
+        const { days, hours, minutes, seconds, closestClass } = timeRemaining;
+        userDiv.innerHTML = `
+          <h2>${email}</h2>
+          <p><strong>Next Class:</strong> ${closestClass.day} at ${closestClass.time}</p>
+          <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s remaining</p>
+          <p><a href="${userSchedule.classLink}" target="_blank">Join Class</a></p>
+          <p><a href="${userSchedule.notesLink}" target="_blank">View Notes</a></p>
+        `;
+      } else {
+        userDiv.innerHTML = `<h2>${email}</h2><p>No upcoming class found.</p>`;
+      }
+
+      userInfoDiv.appendChild(userDiv);
+    }
+
+    // Loop through all the users in the schedule and display their information
+    for (let email in schedule) {
+      displayCountdownForUser(email, schedule[email]);
+    }
+
   </script>
 </body>
 </html>

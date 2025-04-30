@@ -7,6 +7,8 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
     }
     .user-info {
       margin: 20px 0;
@@ -20,7 +22,7 @@
 <body>
 
   <div id="user-info"></div>
-  
+
   <script>
     // Schedule data
     const schedule = {
@@ -47,7 +49,7 @@
     // Function to calculate time remaining
     function calculateTimeRemaining(schedule) {
       const currentTime = new Date();
-
+      
       // User's local time zone offset
       const userTimeZone = schedule.timeZone;
       const userTime = new Date(currentTime.toLocaleString("en-US", { timeZone: userTimeZone }));
@@ -104,27 +106,36 @@
       return classDate;
     }
 
-    // Displaying the countdown for a user based on email query parameter
-    function displayCountdownForUser(email, userSchedule) {
-      const timeRemaining = calculateTimeRemaining(userSchedule);
+    // Function to display countdown and update every second
+    function updateCountdownForUser(email, userSchedule) {
       const userInfoDiv = document.getElementById("user-info");
-      const userDiv = document.createElement("div");
-      userDiv.classList.add("user-info");
+      const countdownDiv = document.createElement("div");
+      countdownDiv.classList.add("user-info");
 
-      if (timeRemaining) {
-        const { days, hours, minutes, seconds, closestClass } = timeRemaining;
-        userDiv.innerHTML = `
-          <h2>${email}</h2>
-          <p><strong>Next Class:</strong> ${closestClass.day} at ${closestClass.time}</p>
-          <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s remaining</p>
-          <p><a href="${userSchedule.classLink}" target="_blank">Join Class</a></p>
-          <p><a href="${userSchedule.notesLink}" target="_blank">View Notes</a></p>
-        `;
-      } else {
-        userDiv.innerHTML = `<h2>${email}</h2><p>No upcoming class found.</p>`;
+      // Function to refresh and update the countdown
+      function refreshCountdown() {
+        const timeRemaining = calculateTimeRemaining(userSchedule);
+
+        if (timeRemaining) {
+          const { days, hours, minutes, seconds, closestClass } = timeRemaining;
+          countdownDiv.innerHTML = `
+            <h2>${email}</h2>
+            <p><strong>Next Class:</strong> ${closestClass.day} at ${closestClass.time}</p>
+            <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s remaining</p>
+            <p><a href="${userSchedule.classLink}" target="_blank">Join Class</a></p>
+            <p><a href="${userSchedule.notesLink}" target="_blank">View Notes</a></p>
+          `;
+        } else {
+          countdownDiv.innerHTML = `<h2>${email}</h2><p>No upcoming class found.</p>`;
+        }
+
+        userInfoDiv.innerHTML = '';  // Clear any previous content
+        userInfoDiv.appendChild(countdownDiv);  // Add the updated countdown
       }
 
-      userInfoDiv.appendChild(userDiv);
+      // Update the countdown every second
+      refreshCountdown(); // Initial update
+      setInterval(refreshCountdown, 1000); // Update every second
     }
 
     // Get email from URL query parameter
@@ -136,11 +147,11 @@
     // Fetch the schedule and display based on the email query parameter
     const email = getEmailFromURL();
     if (email && schedule[email]) {
-      displayCountdownForUser(email, schedule[email]);
+      updateCountdownForUser(email, schedule[email]);
     } else {
       document.getElementById("user-info").innerHTML = `<p>User not found or invalid email parameter.</p>`;
     }
-
   </script>
+
 </body>
 </html>

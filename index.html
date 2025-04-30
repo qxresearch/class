@@ -48,12 +48,19 @@
       font-weight: bold;
       color: #e74c3c;
     }
+
+    #loading {
+      text-align: center;
+      font-size: 1.5em;
+      color: #333;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Class Schedule</h1>
-    <div id="schedule-info">
+    <div id="loading">Loading...</div>
+    <div id="schedule-info" style="display:none;">
       <p><strong>Email:</strong> <span id="email"></span></p>
       <p><strong>Class Link:</strong> <a href="#" id="class-link" target="_blank">Join Class</a></p>
       <p><strong>Notes Link:</strong> <a href="#" id="notes-link" target="_blank">Class Notes</a></p>
@@ -75,7 +82,7 @@
       // Display email in the header
       document.getElementById('email').textContent = email;
 
-      const apiUrl = `https://script.google.com/macros/s/AKfycbwzRTN2fRA1dj891sWoEb6g7jDCaDVuND8Hk90bFJAz20t0WKHbcnlKEHKc21macxNk/exec?email=${email}`;
+      const apiUrl = `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?email=${email}`;
 
       fetch(apiUrl)
         .then(response => response.json())
@@ -85,18 +92,45 @@
             return;
           }
 
+          // Hide loading and display the schedule info
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('schedule-info').style.display = 'block';
+
           // Populate class schedule info
           document.getElementById('class-link').href = data.classLink;
           document.getElementById('class-link').textContent = "Join Class";
           document.getElementById('notes-link').href = data.notesLink;
           document.getElementById('notes-link').textContent = "Class Notes";
           document.getElementById('static-datetime').textContent = data.staticDateTime;
-          document.getElementById('countdown').textContent = data.timeRemaining;
+          
+          // Start the countdown timer
+          const nextClassTime = new Date(data.staticDateTime);
+          updateCountdown(nextClassTime);
+          setInterval(function() {
+            updateCountdown(nextClassTime);
+          }, 1000);
         })
         .catch(error => {
           alert("Error fetching schedule data: " + error);
         });
     };
+
+    function updateCountdown(targetTime) {
+      const currentTime = new Date();
+      const timeDiff = targetTime - currentTime;
+
+      if (timeDiff <= 0) {
+        document.getElementById('countdown').textContent = 'Class has started!';
+        return;
+      }
+
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+      document.getElementById('countdown').textContent = `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+    }
   </script>
 </body>
 </html>

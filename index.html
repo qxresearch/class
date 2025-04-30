@@ -2,149 +2,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Class Schedule</title>
+  <title>Your Class Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #f4f4f4;
+      font-family: "Segoe UI", sans-serif;
+      background: #f9f9f9;
       color: #333;
       margin: 0;
       padding: 2rem;
-      line-height: 1.6;
     }
     .container {
-      background: #fff;
-      padding: 2rem;
       max-width: 600px;
       margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    h1, h2 {
-      color: #222;
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
     }
-    .label {
-      font-weight: bold;
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
     }
-    .countdown {
-      font-size: 1.5rem;
-      margin-top: 1rem;
-      color: #0077cc;
+    .link {
+      margin: 0.4rem 0;
     }
     a {
-      color: #0077cc;
+      color: #007acc;
       text-decoration: none;
     }
     a:hover {
       text-decoration: underline;
     }
+    .error {
+      color: red;
+    }
     ul {
       padding-left: 1.2rem;
     }
-    .error {
-      color: red;
+    .countdown {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Welcome to Your Class Schedule</h1>
-    <div id="content">
-      <p>Hello, <span id="email-display">Loading...</span></p>
+    <div id="email-display"></div>
 
-      <p><span class="label">Class Link:</span> <a href="#" id="class-link">Loading...</a></p>
-      <p><span class="label">Notes Link:</span> <a href="#" id="notes-link">Loading...</a></p>
+    <div class="link"><strong>Class Link:</strong> <a id="class-link" href="#" target="_blank">Loading...</a></div>
+    <div class="link"><strong>Notes Link:</strong> <a id="notes-link" href="#" target="_blank">Loading...</a></div>
 
-      <h2>Weekly Schedule:</h2>
-      <ul id="weekly-schedule">Loading...</ul>
+    <h2>Weekly Schedule:</h2>
+    <ul id="schedule-list">Loading...</ul>
 
-      <h2>Next Class:</h2>
-      <div id="next-class-time">Loading...</div>
-      <div class="countdown" id="countdown">Countdown loading...</div>
-    </div>
-    <p class="error" id="error-msg"></p>
+    <h2>Next Class:</h2>
+    <div id="next-class-time">Loading...</div>
+    <div class="countdown" id="countdown-text">Calculating...</div>
+
+    <div id="error" class="error"></div>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const email = params.get('email');
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const displayEmail = document.getElementById('email-display');
-    const classLinkElem = document.getElementById('class-link');
-    const notesLinkElem = document.getElementById('notes-link');
-    const scheduleList = document.getElementById('weekly-schedule');
-    const nextClassElem = document.getElementById('next-class-time');
-    const countdownElem = document.getElementById('countdown');
-    const errorElem = document.getElementById('error-msg');
+    const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjG_sjvzXVGwjtXNJYbrofHO3RBHzrsArc5LzvZ2c7Q5HLjqa-w-reNAxPjGX4OPgTEbeBBRCcCE4cuJ8k-yV6GECNsjMKfKJzSbxA84r-_8MavWD5XnpMqfaYZM2Pxb1-0dZreDqEGqMcToyEEObSAARqm7Pq6pZu9G46zKKk-mQP6-s9B0nGcwSAv0L2-4Dlk5iDllZL5VeYvWVNqWK43zK-LfdFmCSrwKkIp_iFM7nIJGJmaBjbzLAWEyydpLRL9g-W96P71Ta1_m_vbNeB2nUUwtw&lib=M74ZoQHRljJWxC6vIRFkyDp5vqXu_LAbk";
 
-    if (!email) {
-      errorElem.textContent = "Email is missing in URL. Use ?email=your@email.com";
-    } else {
-      displayEmail.textContent = email;
+    document.getElementById("email-display").textContent = email ? `Hello, ${email}` : "No email provided.";
 
-      const API_URL = `https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjG_sjvzXVGwjtXNJYbrofHO3RBHzrsArc5LzvZ2c7Q5HLjqa-w-reNAxPjGX4OPgTEbeBBRCcCE4cuJ8k-yV6GECNsjMKfKJzSbxA84r-_8MavWD5XnpMqfaYZM2Pxb1-0dZreDqEGqMcToyEEObSAARqm7Pq6pZu9G46zKKk-mQP6-s9B0nGcwSAv0L2-4Dlk5iDllZL5VeYvWVNqWK43zK-LfdFmCSrwKkIp_iFM7nIJGJmaBjbzLAWEyydpLRL9g-W96P71Ta1_m_vbNeB2nUUwtw&lib=M74ZoQHRljJWxC6vIRFkyDp5vqXu_LAbk&email=${encodeURIComponent(email)}&timeZone=${encodeURIComponent(timezone)}`;
+    async function fetchData() {
+      if (!email) return;
 
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (data.classLink) {
-            classLinkElem.href = data.classLink;
-            classLinkElem.textContent = data.classLink;
-          }
+      try {
+        const res = await fetch(`${apiUrl}&email=${encodeURIComponent(email)}`);
+        const data = await res.json();
 
-          if (data.notesLink) {
-            notesLinkElem.href = data.notesLink;
-            notesLinkElem.textContent = data.notesLink;
-          }
+        if (data.error) {
+          document.getElementById("error").textContent = data.error;
+          return;
+        }
 
-          if (Array.isArray(data.weeklySchedule)) {
-            scheduleList.innerHTML = '';
-            data.weeklySchedule.forEach(item => {
-              const li = document.createElement('li');
-              li.textContent = `${item.day} at ${item.timeUTC} UTC`;
-              scheduleList.appendChild(li);
-            });
-          }
+        document.getElementById("class-link").href = data.classLink;
+        document.getElementById("class-link").textContent = data.classLink;
 
-          if (data.nextClassTime) {
-            const classDate = new Date(data.nextClassTime);
-            nextClassElem.textContent = classDate.toLocaleString(undefined, {
-              dateStyle: 'full',
-              timeStyle: 'short'
-            });
+        document.getElementById("notes-link").href = data.notesLink;
+        document.getElementById("notes-link").textContent = data.notesLink;
 
-            startCountdown(classDate);
-          } else {
-            countdownElem.textContent = "No upcoming class scheduled.";
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          errorElem.textContent = "Error fetching schedule.";
+        const scheduleList = document.getElementById("schedule-list");
+        scheduleList.innerHTML = "";
+        data.weeklySchedule.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = `${item.day} at ${item.time} (${data.timeZone})`;
+          scheduleList.appendChild(li);
         });
+
+        document.getElementById("next-class-time").textContent = data.nextClassTimeLocal || "Not scheduled.";
+        startCountdown(new Date(data.nextClassTimeUTC));
+
+      } catch (err) {
+        document.getElementById("error").textContent = "Error fetching schedule.";
+        console.error(err);
+      }
     }
 
     function startCountdown(targetDate) {
       function updateCountdown() {
         const now = new Date();
         const diff = targetDate - now;
-
         if (diff <= 0) {
-          countdownElem.textContent = "Class is starting now!";
+          document.getElementById("countdown-text").textContent = "Your class is starting!";
           return;
         }
 
-        const seconds = Math.floor((diff / 1000) % 60);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
 
-        countdownElem.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        document.getElementById("countdown-text").textContent =
+          `${days} days ${hours} hours ${mins} mins ${secs} seconds`;
       }
 
       updateCountdown();
       setInterval(updateCountdown, 1000);
     }
+
+    fetchData();
   </script>
 </body>
 </html>

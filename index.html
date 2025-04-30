@@ -1,56 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Schedule</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 20px;
-            margin: 0;
-        }
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        p {
-            font-size: 18px;
-            margin: 15px 0;
-        }
-        #countdown {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        .link {
-            color: #3498db;
-            text-decoration: none;
-        }
-        .link:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Next Class</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      text-align: center;
+      padding: 50px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    #countdown {
+      font-size: 1.5em;
+      margin-top: 20px;
+      color: #e74c3c;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 8px 0;
+    }
+    .label {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Class Schedule</h1>
-        <p><strong>Class Link:</strong> <a id="classLink" class="link" href="#">Loading...</a></p>
-        <p><strong>Notes Link:</strong> <a id="notesLink" class="link" href="#">Loading...</a></p>
-        <p><strong>Schedule:</strong> <span id="schedule">Loading...</span></p>
-        <p id="countdown">Next Class: Loading...</p>
-    </div>
+  <div class="container">
+    <h1>Welcome to Your Class Schedule</h1>
+    <p id="email"></p>
+    <p><span class="label">Class Link:</span> <a id="classLink" href="#" target="_blank">Loading...</a></p>
+    <p><span class="label">Notes Link:</span> <a id="notesLink" href="#" target="_blank">Loading...</a></p>
+    <p><span class="label">Weekly Schedule:</span></p>
+    <ul id="scheduleList"></ul>
+    <p id="countdown">Loading countdown...</p>
+  </div>
 
-    <script src="app.js"></script>
+  <script>
+    function startCountdown(targetTime) {
+      function update() {
+        const now = new Date().getTime();
+        const distance = targetTime - now;
+
+        if (distance < 0) {
+          document.getElementById("countdown").innerText = "Class has started or passed.";
+          return;
+        }
+
+        const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerText = 
+          `Next class in: ${d}d ${h}h ${m}m ${s}s`;
+      }
+
+      update();
+      setInterval(update, 1000);
+    }
+
+    async function loadSchedule() {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      document.getElementById("email").innerText = email ? `Hello, ${email}` : "No email provided.";
+
+      if (!email) return;
+
+      try {
+        const response = await fetch(`https://script.google.com/macros/s/YOUR_DEPLOY_ID_HERE/exec?email=${encodeURIComponent(email)}&timeZone=${encodeURIComponent(timeZone)}`);
+        const data = await response.json();
+
+        if (data.error) {
+          document.getElementById("countdown").innerText = data.error;
+          return;
+        }
+
+        document.getElementById("classLink").href = data.classLink;
+        document.getElementById("classLink").innerText = data.classLink;
+
+        document.getElementById("notesLink").href = data.notesLink;
+        document.getElementById("notesLink").innerText = data.notesLink;
+
+        const list = document.getElementById("scheduleList");
+        data.weeklySchedule.forEach(entry => {
+          const li = document.createElement("li");
+          li.innerText = `${entry.day} at ${entry.timeUTC} UTC`;
+          list.appendChild(li);
+        });
+
+        if (data.nextClassTime) {
+          const target = new Date(data.nextClassTime).getTime();
+          startCountdown(target);
+        } else {
+          document.getElementById("countdown").innerText = "No upcoming class found.";
+        }
+
+      } catch (e) {
+        document.getElementById("countdown").innerText = "Error fetching schedule.";
+        console.error(e);
+      }
+    }
+
+    loadSchedule();
+  </script>
 </body>
 </html>

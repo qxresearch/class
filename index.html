@@ -55,7 +55,7 @@
 
     async function fetchData() {
       try {
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbwzRTN2fRA1dj891sWoEb6g7jDCaDVuND8Hk90bFJAz20t0WKHbcnlKEHKc21macxNk/exec?email=${encodeURIComponent(email)}`);
+        const response = await fetch(`https://script.google.com/macros/s/your_script_id_here/exec?email=${encodeURIComponent(email)}`);
         const data = await response.json();
 
         if (data.error) {
@@ -78,25 +78,26 @@
       }
     }
 
+    // This function will run every second and update the countdown in real-time
     function updateCountdownAccurate() {
-      const now = new Date();
-      const diff = targetTime - now;
+      setInterval(function() {
+        const now = new Date();
+        const diff = targetTime - now;
 
-      if (diff <= 0) {
-        document.getElementById("countdown").innerText = "Class has started!";
-        return;
-      }
+        if (diff <= 0) {
+          document.getElementById("countdown").innerText = "Class has started!";
+          return;
+        }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
 
-      document.getElementById("countdown").innerText =
-        `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+        document.getElementById("countdown").innerText =
+          `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
 
-      const msUntilNextSecond = 1000 - now.getMilliseconds(); // Calculate remaining milliseconds until next second
-      setTimeout(updateCountdownAccurate, msUntilNextSecond); // Call updateCountdownAccurate when the next second starts
+      }, 1000); // Update every second
     }
 
     if (email) {

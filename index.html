@@ -259,198 +259,193 @@ body {
     <div class="container"> rohitmandal814566@gmail.com</div>
 
     <script>
-        // Schedule data stored in UTC
-        const schedule = {
-            "john@example.com": {
-                classLink: "https://meet.google.com/xdz-xaob-rdk",
-                notesLink: "https://example.com/john-notes",
-                weeklyScheduleUTC: [
-                    { day: "Thursday", time: "17:00" }, // Thursday 5:00 PM UTC
-                    { day: "Saturday", time: "09:00" }, // Saturday 9:00 AM UTC
-                    { day: "Saturday", time: "11:00" }  // Another Saturday session
-                ]
-            },
-            "alvina@example.com": {
-                classLink: "https://meet.google.com/xdz-xaob-rdk",
-                notesLink: "https://share.goodnotes.com/s/vqohuFAlaY5veLJBnno7ri",
-                weeklyScheduleUTC: [
-                    { day: "Monday", time: "08:30" },
-                    { day: "Tuesday", time: "8:30" },
-                    { day: "Wednesday", time: "8:30" },
-                    { day: "Thursday", time: "8:30" }// Another Tuesday session
-                ]
-            }
-        ,
-            "alice@example.com": {
-                classLink: "https://zoom.us/alice-session",
-                notesLink: "https://example.com/alice-notes",
-                weeklyScheduleUTC: [
-                    { day: "Tuesday", time: "09:00" },
-                    { day: "Friday", time: "12:00" },
-                    { day: "Tuesday", time: "15:00" } // Another Tuesday session
-                ]
-            }
-        };
-
-        // Function to calculate time remaining until the next class (based on UTC schedule)
-        function calculateTimeRemaining(schedule) {
-            const nowLocal = new Date();
-            const viewerTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-            let closestClassTimeUTC = null;
-            let closestClassSchedule = null;
-
-            for (const classSchedule of schedule.weeklyScheduleUTC) {
-                const classDay = classSchedule.day;
-                const classTime = classSchedule.time;
-
-                const nextClassUTC = getNextClassDateTimeUTC(classDay, classTime, nowLocal); // Pass nowLocal
-
-                if (nextClassUTC > nowLocal.getTime()) {
-                    if (!closestClassTimeUTC || nextClassUTC < closestClassTimeUTC) {
-                        closestClassTimeUTC = nextClassUTC;
-                        closestClassSchedule = classSchedule;
-                    }
-                }
-            }
-
-            if (!closestClassSchedule) return null;
-
-            const timeDiff = closestClassTimeUTC - nowLocal.getTime(); // Difference between future UTC and current local
-            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-            // Convert the next class UTC time to the viewer's local time for display
-            const closestClassTimeViewerLocal = new Date(closestClassTimeUTC);
-
-            return { days, hours, minutes, seconds, closestClassSchedule, closestClassTimeViewerLocal };
+      // Schedule data stored in UTC
+      const schedule = {
+       "alvina@gmail.com": {
+        classLink: "https://meet.google.com/xdz-xaob-rdk",
+        notesLink: "https://example.com/john-notes",
+        weeklyScheduleUTC: [
+         { day: "Monday", time: "08:30" }, // Monday 8:30 AM UTC
+         { day: "Tuesday", time: "08:30" }, // Tuesday 8:30 AM UTC
+         { day: "Wednesday", time: "08:30" }, // Wednesday 8:30 AM UTC
+         { day: "Wednesday", time: "08:30" }
+        ]
+       },
+       "alice@example.com": {
+        classLink: "https://zoom.us/alice-session",
+        notesLink: "https://example.com/alice-notes",
+        weeklyScheduleUTC: [
+         { day: "Tuesday", time: "09:00" },
+         { day: "Friday", time: "12:00" },
+         { day: "Tuesday", time: "15:00" }
+        ]
+       }
+      };
+    
+      // Function to get the user's current local time
+      function getCurrentLocalDateTime() {
+       return new Date();
+      }
+    
+      // Function to calculate time remaining until the next class (based on UTC schedule)
+      function calculateTimeRemaining(userSchedule) {
+       const nowLocal = getCurrentLocalDateTime();
+       const nowUTC = new Date(nowLocal.getTime() + nowLocal.getTimezoneOffset() * 60000); // Convert local time to UTC
+       const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+       const currentDayUTCIndex = nowUTC.getUTCDay();
+       const currentDayUTC = dayNames[currentDayUTCIndex];
+    
+       let closestFutureTimeUTC = null;
+       let closestClassSchedule = null;
+    
+       for (const item of userSchedule.weeklyScheduleUTC) {
+        const [hoursUTC, minutesUTC] = item.time.split(':').map(Number);
+        const targetDayIndex = dayNames.indexOf(item.day);
+    
+        // Calculate the date of the next occurrence of this class
+        let nextClassDateUTC = new Date(Date.UTC(
+         nowUTC.getUTCFullYear(),
+         nowUTC.getUTCMonth(),
+         nowUTC.getUTCDate() + (targetDayIndex - currentDayUTCIndex + 7) % 7, // Get days until next occurrence
+         hoursUTC,
+         minutesUTC,
+         0,
+         0
+        ));
+    
+        // If it's the same day, ensure the time is in the future
+        if (targetDayIndex === currentDayUTCIndex && nextClassDateUTC.getTime() <= nowUTC.getTime()) {
+         nextClassDateUTC.setDate(nextClassDateUTC.getUTCDate() + 7); // Move to next week
         }
-
-        // Function to get the next class UTC timestamp
-        function getNextClassDateTimeUTC(day, time, nowLocal) {
-            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const targetDayIndex = dayNames.indexOf(day);
-            const currentDayIndexUTC = nowLocal.getUTCDay(); // Use getUTCDay for UTC day
-
-            let daysUntilClass = targetDayIndex - currentDayIndexUTC;
-            if (daysUntilClass < 0) {
-                daysUntilClass += 7;
-            } else if (daysUntilClass === 0) {
-                const [hours, minutes] = time.split(':').map(Number);
-                const currentUTCHours = nowLocal.getUTCHours();
-                const currentUTCMinutes = nowLocal.getUTCMinutes();
-
-                if (hours < currentUTCHours || (hours === currentUTCHours && minutes <= currentUTCMinutes)) {
-                    daysUntilClass += 7;
-                }
-            }
-
-            const nextClassUTCDate = new Date(Date.UTC(
-                nowLocal.getUTCFullYear(),
-                nowLocal.getUTCMonth(),
-                nowLocal.getUTCDate() + daysUntilClass,
-                parseInt(time.split(':')[0], 10),
-                parseInt(time.split(':')[1], 10),
-                0,
-                0
-            ));
-
-            return nextClassUTCDate.getTime();
+    
+        if (!closestFutureTimeUTC || nextClassDateUTC < closestFutureTimeUTC) {
+         closestFutureTimeUTC = nextClassDateUTC.getTime();
+         closestClassSchedule = item;
         }
-
-        // Function to display countdown and update every second
-        function updateCountdownForUser(email, userSchedule) {
-            const classLinkElement = document.getElementById("class-link");
-            const notesLinkElement = document.getElementById("notes-link");
-            const nextClassDayElement = document.getElementById("next-class-day");
-            const nextClassTimeElement = document.getElementById("next-class-time");
-            const daysElement = document.getElementById("days");
-            const hoursElement = document.getElementById("hours");
-            const minutesElement = document.getElementById("minutes");
-            const secondsElement = document.getElementById("seconds");
-            const userNotFoundDiv = document.getElementById("user-not-found");
-            const scheduleDisplayDiv = document.getElementById("schedule-display");
-            const scheduleBody = document.getElementById("schedule-body");
-
-            function refreshCountdown() {
-                const timeRemainingData = calculateTimeRemaining(userSchedule);
-
-                if (timeRemainingData) {
-                    const { days, hours, minutes, seconds, closestClassSchedule, closestClassTimeViewerLocal } = timeRemainingData;
-
-                    classLinkElement.href = userSchedule.classLink;
-                    notesLinkElement.href = userSchedule.notesLink;
-                    nextClassDayElement.textContent = closestClassTimeViewerLocal.toLocaleDateString('en-US', { weekday: 'long' });
-                    nextClassTimeElement.textContent = closestClassTimeViewerLocal.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-                    daysElement.textContent = days;
-                    hoursElement.textContent = hours;
-                    minutesElement.textContent = minutes;
-                    secondsElement.textContent = seconds;
-                    userNotFoundDiv.style.display = 'none';
-
-                    const totalSecondsRemaining = (days * 24 * 3600) + (hours * 3600) + (minutes * 60) + seconds;
-
-                    if (totalSecondsRemaining < 600) {
-                        // window.open(userSchedule.classLink, '_blank');
-                        // clearInterval(countdownInterval);
-                    }
-                } else {
-                    nextClassDayElement.textContent = "No";
-                    nextClassTimeElement.textContent = "upcoming class";
-                    daysElement.textContent = "0";
-                    hoursElement.textContent = "0";
-                    minutesElement.textContent = "0";
-                    secondsElement.textContent = "0";
-                    userNotFoundDiv.style.display = 'none'; // Ensure this is hidden if a previous user was not found
-                }
-            }
-
-            // Display the weekly schedule in a table in the user's local time zone
-            if (userSchedule && userSchedule.weeklyScheduleUTC) {
-                scheduleDisplayDiv.style.display = 'block';
-                scheduleBody.innerHTML = ''; // Clear previous schedule
-
-                userSchedule.weeklyScheduleUTC.forEach(item => {
-                    const row = scheduleBody.insertRow();
-                    const dayCell = row.insertCell();
-                    const timeCell = row.insertCell();
-
-                    // Create a Date object from the UTC time, assuming the date is today in UTC
-                    const [hoursUTC, minutesUTC] = item.time.split(':').map(Number);
-                    const nowUTC = new Date();
-                    const classDateUTC = new Date(Date.UTC(nowUTC.getUTCFullYear(), nowUTC.getUTCMonth(), nowUTC.getUTCDate(), hoursUTC, minutesUTC, 0, 0));
-
-                    // Format the date and time in the user's local time zone
-                    const localDay = classDateUTC.toLocaleDateString('en-US', { weekday: 'long' });
-                    const localTime = classDateUTC.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-
-                    dayCell.textContent = localDay;
-                    timeCell.textContent = localTime;
-                });
-            } else {
-                scheduleDisplayDiv.style.display = 'none';
-            }
-
-            refreshCountdown();
-            setInterval(refreshCountdown, 1000);
+       }
+    
+       if (!closestClassSchedule) return null;
+    
+       const timeDiff = closestFutureTimeUTC - nowUTC.getTime();
+       const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+       const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+       const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+       const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    
+       const closestClassTimeViewerLocal = new Date(closestFutureTimeUTC);
+    
+       return { days, hours, minutes, seconds, closestClassSchedule, closestClassTimeViewerLocal };
+      }
+    
+      // Function to display countdown and update every second
+      function updateDisplay(userSchedule) {
+       const classLinkElement = document.getElementById("class-link");
+       const notesLinkElement = document.getElementById("notes-link");
+       const nextClassDayElement = document.getElementById("next-class-day");
+       const nextClassTimeElement = document.getElementById("next-class-time");
+       const daysElement = document.getElementById("days");
+       const hoursElement = document.getElementById("hours");
+       const minutesElement = document.getElementById("minutes");
+       const secondsElement = document.getElementById("seconds");
+       const userNotFoundDiv = document.getElementById("user-not-found");
+       const scheduleDisplayDiv = document.getElementById("schedule-display");
+       const scheduleBody = document.getElementById("schedule-body");
+    
+       const timeRemainingData = calculateTimeRemaining(userSchedule);
+    
+       if (timeRemainingData) {
+        const { days, hours, minutes, seconds, closestClassSchedule, closestClassTimeViewerLocal } = timeRemainingData;
+    
+        classLinkElement.href = userSchedule.classLink;
+        notesLinkElement.href = userSchedule.notesLink;
+        nextClassDayElement.textContent = closestClassTimeViewerLocal.toLocaleDateString('en-US', { weekday: 'long' });
+        nextClassTimeElement.textContent = closestClassTimeViewerLocal.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        daysElement.textContent = days;
+        hoursElement.textContent = hours;
+        minutesElement.textContent = minutes;
+        secondsElement.textContent = seconds;
+        userNotFoundDiv.style.display = 'none';
+    
+        const totalSecondsRemaining = (days * 24 * 3600) + (hours * 3600) + (minutes * 60) + seconds;
+    
+        if (totalSecondsRemaining < 600) {
+         // window.open(userSchedule.classLink, '_blank');
+         // clearInterval(countdownInterval);
         }
-
-        function getEmailFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('email');
-        }
-
-        const email = getEmailFromURL();
-        if (email && schedule[email]) {
-            updateCountdownForUser(email, schedule[email]);
-        } else {
-            document.getElementById("user-info").style.display = 'none';
-            document.getElementById("schedule-display").style.display = 'none';
-            document.getElementById("user-not-found").style.display = 'block';
-        }
-    </script>
+       } else {
+        nextClassDayElement.textContent = "No";
+        nextClassTimeElement.textContent = "upcoming class";
+        daysElement.textContent = "0";
+        hoursElement.textContent = "0";
+        minutesElement.textContent = "0";
+        secondsElement.textContent = "0";
+        userNotFoundDiv.style.display = 'none';
+       }
+    
+       // Display the weekly schedule in a table in the user's local time zone
+       if (userSchedule && userSchedule.weeklyScheduleUTC) {
+        scheduleDisplayDiv.style.display = 'block';
+        scheduleBody.innerHTML = ''; // Clear previous schedule
+    
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const nowLocal = getCurrentLocalDateTime();
+        const nowUTC = new Date(nowLocal.getTime() + nowLocal.getTimezoneOffset() * 60000);
+        const currentDayUTCIndex = nowUTC.getUTCDay();
+    
+        userSchedule.weeklyScheduleUTC.forEach(item => {
+         const row = scheduleBody.insertRow();
+         const dayCell = row.insertCell();
+         const timeCell = row.insertCell();
+    
+         const targetDayIndex = dayNames.indexOf(item.day);
+         const daysToAdd = (targetDayIndex - currentDayUTCIndex + 7) % 7;
+    
+         const [hoursUTC, minutesUTC] = item.time.split(':').map(Number);
+         const classDateUTC = new Date(Date.UTC(
+          nowUTC.getUTCFullYear(),
+          nowUTC.getUTCMonth(),
+          nowUTC.getUTCDate() + daysToAdd,
+          hoursUTC,
+          minutesUTC,
+          0,
+          0
+         ));
+    
+         const localDay = classDateUTC.toLocaleDateString('en-US', { weekday: 'long' });
+         const localTime = classDateUTC.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    
+         dayCell.textContent = localDay;
+         timeCell.textContent = localTime;
+        });
+       } else {
+        scheduleDisplayDiv.style.display = 'none';
+       }
+      }
+    
+      function initialize(email, userSchedule) {
+       // Initial display
+       updateDisplay(userSchedule);
+    
+       // Update the display every second to react to potential time/timezone changes
+       setInterval(() => {
+        updateDisplay(userSchedule);
+       }, 1000);
+      }
+    
+      function getEmailFromURL() {
+       const urlParams = new URLSearchParams(window.location.search);
+       return urlParams.get('email');
+      }
+    
+      const email = getEmailFromURL();
+      if (email && schedule[email]) {
+       initialize(email, schedule[email]);
+      } else {
+       document.getElementById("user-info").style.display = 'none';
+       document.getElementById("schedule-display").style.display = 'none';
+       document.getElementById("user-not-found").style.display = 'block';
+      }
+     </script>
 
 </body>
 </html>

@@ -110,6 +110,25 @@ body {
   box-sizing: border-box;
  }
 
+ .contshad{
+  position: relative;
+  width: 420px;
+  max-height: 80vh;
+  /* backdrop-filter: blur(5px); */
+  /* background-color: rgb(0, 0, 0); */
+  border: 2px solid rgba(175, 175, 175, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+
+ }
+
   .schedule-container {
   width: 420px;
   backdrop-filter: blur(10px);
@@ -118,8 +137,8 @@ body {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   padding: 20px;
   color: rgb(34, 34, 34);
-  margin-top: 20px;
-  margin-bottom: 20px;
+  /* margin-top: 20px; */
+  /* margin-bottom: 20px; */
   text-align: left;
  }
 
@@ -135,7 +154,7 @@ body {
 
   a {
   font-size: 1em;
-  color: #a5c4ff;
+  color: #6a9eff;
   text-decoration: none;
  }
 
@@ -213,23 +232,23 @@ body {
     <div id="user-info">
 
         <div class="container links-outer-container">
-            <div id="class-link-container" class="container links-container">
+            <div id="class-link-container" class="contshad">
                 <h3 class="link-title">Class Links</h3>
                 <p><a id="class-link" href="#" target="_blank">GoogleMeet</a></p>
             </div>
-            <div id="notes-link-container" class="container links-container">
+            <div id="notes-link-container" class="contshad">
                 <h3 class="link-title">Notes</h3>
                 <p><a id="notes-link" href="#" target="_blank">GoodNotes</a></p>
             </div>
         </div>
 
         <div class="container links-outer-container">
-            <div id="next-class-container" class="container">
+            <div id="next-class-container" class="contshad">
                 <h3>Next Class</h3>
                 <p><span id="next-class-day"></span> at <span id="next-class-time"></span></p>
             </div>
 
-            <div id="time-remaining-container" class="container">
+            <div id="time-remaining-container" class="contshad">
                 <h3>Time Remaining</h3>
                 <p class="countdown"><span id="days"></span>d <span id="hours"></span>h <span id="minutes"></span>m <span id="seconds"></span>s</p>
             </div>
@@ -261,9 +280,9 @@ body {
     <script>
       // Schedule data stored in UTC
       const schedule = {
-       "alvina@example.com": {
+       "alvina": {
         classLink: "https://meet.google.com/xdz-xaob-rdk",
-        notesLink: "https://example.com/john-notes",
+        notesLink: "https://share.goodnotes.com/s/vqohuFAlaY5veLJBnno7ri",
         weeklyScheduleUTC: [
          { day: "Monday", time: "08:30" }, // Monday 8:30 AM UTC
          { day: "Tuesday", time: "08:30" }, // Tuesday 8:30 AM UTC
@@ -271,13 +290,28 @@ body {
          { day: "Wednesday", time: "08:30" }
         ]
        },
-       "alice@example.com": {
-        classLink: "https://zoom.us/alice-session",
-        notesLink: "https://example.com/alice-notes",
+       "noah": {
+        classLink: "https://meet.google.com/xdz-xaob-rdk",
+        notesLink: "https://share.goodnotes.com/s/vNOc9PcD0tjjHPh0mX4mj0",
         weeklyScheduleUTC: [
-         { day: "Tuesday", time: "09:00" },
-         { day: "Friday", time: "12:00" },
-         { day: "Tuesday", time: "15:00" }
+         { day: "Monday", time: "17:00" }, // Monday 8:30 AM UTC
+         { day: "Saturday", time: "17:0" } // Tuesday 8:30 AM UTC
+        ]
+       },
+       "eza": {
+        classLink: "https://meet.google.com/xdz-xaob-rdk",
+        notesLink: "https://share.goodnotes.com/s/nJJajqlCWm5j67RTF3M8H5",
+        weeklyScheduleUTC: [
+         { day: "Wednesday", time: "15:00" }, // Monday 8:30 AM UTC
+         { day: "Saturday", time: "16:00" } // Tuesday 8:30 AM UTC
+        ]
+       },
+       "mariana": {
+        classLink: "https://meet.google.com/xdz-xaob-rdk",
+        notesLink: "https://share.goodnotes.com/s/9DDo4h7apdA8UwlznhlmcA",
+        weeklyScheduleUTC: [
+        { day: "Thursday", time: "17:30" }, // Monday 8:30 AM UTC
+        { day: "Saturday", time: "09:00" } 
         ]
        }
       };

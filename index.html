@@ -1,203 +1,456 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Schedule</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-    }
-    .user-info {
-      margin: 20px 0;
-    }
-    .countdown, .class-info {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .class-link, .notes-link {
-      margin: 10px 0;
-    }
-    .next-class, .time-remaining {
-      margin-top: 20px;
-    }
-    .container {
-      border: 1px solid #ccc;
-      padding: 20px;
-      margin: 10px;
-      border-radius: 8px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <style>
+
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 12px;
+  min-height: 100vh;
+  margin: 0;
+  padding-top: 20px;
+  background: #303030 url('blur1.jpg') no-repeat center top;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  }
+
+  .instructor-info-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 200px; /* Adjust as needed */
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: rgb(120, 120, 120);
+  text-align: center;
+  z-index: 2;
+ }
+
+ .instructor-info-container img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+ }
+
+ .instructor-info-container p {
+  margin-bottom: 0;
+  text-align: center;
+ }
+
+ /* Homework Container (Top Right) */
+ .homework-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 150px; /* Adjust as needed */
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: rgb(255, 0, 0);
+  text-align: center;
+  z-index: 2;
+ }
+
+ .homework-container h3 {
+  margin-top: 0;
+ }
+
+ /* Mobile View Adjustments - Hide if screen width is small */
+ @media (max-width: 650px) { /* Adjust breakpoint as needed */
+  .instructor-info-container,
+  .homework-container {
+  display: none;
+  }
+ }
+
+
+  .user-info {
+  margin: 20px 0;
+  width: 420px;
+ }
+
+  .links-outer-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+ }
+
+  .links-container {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+ }
+
+  .container {
+  position: relative;
+  width: 420px;
+  max-height: 80vh;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+ }
+
+  .schedule-container {
+  width: 420px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  color: rgb(34, 34, 34);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: left;
+ }
+
+  .paragraph {
+  color: rgb(110, 110, 110);
+  text-align: center;
+ }
+
+  .link-title {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+ }
+
+  a {
+  font-size: 1em;
+  color: #a5c4ff;
+  text-decoration: none;
+ }
+
+  a:hover {
+  color: lightgrey;
+ }
+
+  a:visited {
+  color: white;
+ }
+
+  .schedule-container h3 {
+  text-align: center;
+  margin-bottom: 10px;
+ }
+
+  .schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+ }
+
+  .schedule-table th,
+  .schedule-table td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: left;
+  text-align: center;
+ }
+
+  .schedule-table th {
+  font-weight: bold;
+  text-align: center;
+ }
+
+  .schedule-table tr:last-child td {
+  border-bottom: none;
+ }
+
+  /* Mobile View Adjustments */
+  @media (max-width: 600px) {
+  .instructor-info-container,
+  .homework-container {
+  display: none; /* Hide on smaller screens */
+  }
+
+  /* Option 2: Move to the end of the page on mobile */
+  /*
+  .instructor-info-container,
+  .homework-container {
+  position: relative; !* Remove absolute positioning *!
+  top: auto;
+  left: auto;
+  right: auto;
+  margin: 20px auto; !* Center and add margin *!
+  width: 90%; !* Take up more width on mobile *!
+  }
+  */
+  }
+
+
+    </style>
 </head>
 <body>
+<!--   
+  <div class="instructor-info-container">
+    <img src="kk.png" alt="Instructor Photo">
+        <p> <code>rohitmandal814566@gmail.com</code> </p>     
+  </div>
 
-  <div id="user-info"></div>
+  
+   -->
+  
 
-  <script>
-    // Schedule data
-    const schedule = {
-      "john@example.com": {
-        classLink: "https://meet.google.com/happy",
-        notesLink: "https://example.com/john-notes",
-        timeZone: "America/New_York", // EST
-        weeklySchedule: [
-          { day: "Wednesday", time: "17:30" },
-          { day: "Thursday", time: "14:00" }
-        ]
-      },
-      "alice@example.com": {
-        classLink: "https://zoom.us/alice-session",
-        notesLink: "https://example.com/alice-notes",
-        timeZone: "Europe/Berlin", // CEST
-        weeklySchedule: [
-          { day: "Tuesday", time: "09:00" },
-          { day: "Friday", time: "12:00" }
-        ]
-      }
-    };
+    <div id="user-info">
 
-    // Function to calculate time remaining
-    function calculateTimeRemaining(schedule) {
-      const currentTime = new Date();
-      
-      // User's local time zone offset
-      const userTimeZone = schedule.timeZone;
-      const userTime = new Date(currentTime.toLocaleString("en-US", { timeZone: userTimeZone }));
+        <div class="container links-outer-container">
+            <div id="class-link-container" class="container links-container">
+                <h3 class="link-title">Class Links</h3>
+                <p><a id="class-link" href="#" target="_blank">GoogleMeet</a></p>
+            </div>
+            <div id="notes-link-container" class="container links-container">
+                <h3 class="link-title">Notes</h3>
+                <p><a id="notes-link" href="#" target="_blank">GoodNotes</a></p>
+            </div>
+        </div>
 
-      let closestClassTime = null;
-      let closestClass = null;
+        <div class="container links-outer-container">
+            <div id="next-class-container" class="container">
+                <h3>Next Class</h3>
+                <p><span id="next-class-day"></span> at <span id="next-class-time"></span></p>
+            </div>
 
-      // Loop through the weekly schedule and find the next class
-      for (let i = 0; i < schedule.weeklySchedule.length; i++) {
-        const classSchedule = schedule.weeklySchedule[i];
-        const classDay = classSchedule.day;
-        const classTime = classSchedule.time;
+            <div id="time-remaining-container" class="container">
+                <h3>Time Remaining</h3>
+                <p class="countdown"><span id="days"></span>d <span id="hours"></span>h <span id="minutes"></span>m <span id="seconds"></span>s</p>
+            </div>
+        </div>
 
-        // Convert day and time to Date object for comparison
-        let classDate = getNextClassDate(classDay, classTime, userTime);
+        <div id="user-not-found" class="container" style="display: none;">
+            <p>User not found or invalid email parameter.</p>
+        </div>
+    </div>
 
-        if (classDate > userTime) {
-          if (!closestClassTime || classDate < closestClassTime) {
-            closestClassTime = classDate;
-            closestClass = classSchedule;
-          }
+    <div id="schedule-display" class="container schedule-container" style="display: none;">
+        <h3>Your Weekly Schedule (Local Time)</h3>
+        <div id="weekly-schedule">
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule-body">
+                    </tbody>
+            </table>
+        </div>   
+    </div>
+
+    <div class="container"> rohitmandal814566@gmail.com</div>
+
+    <script>
+        // Schedule data stored in UTC
+        const schedule = {
+            "john@example.com": {
+                classLink: "https://meet.google.com/xdz-xaob-rdk",
+                notesLink: "https://example.com/john-notes",
+                weeklyScheduleUTC: [
+                    { day: "Thursday", time: "17:00" }, // Thursday 5:00 PM UTC
+                    { day: "Saturday", time: "09:00" }, // Saturday 9:00 AM UTC
+                    { day: "Saturday", time: "11:00" }  // Another Saturday session
+                ]
+            },
+            "alvina@example.com": {
+                classLink: "https://meet.google.com/xdz-xaob-rdk",
+                notesLink: "https://share.goodnotes.com/s/vqohuFAlaY5veLJBnno7ri",
+                weeklyScheduleUTC: [
+                    { day: "Monday", time: "08:30" },
+                    { day: "Tuesday", time: "8:30" },
+                    { day: "Wednesday", time: "8:30" },
+                    { day: "Thursday", time: "8:30" }// Another Tuesday session
+                ]
+            }
+        },
+            "alice@example.com": {
+                classLink: "https://zoom.us/alice-session",
+                notesLink: "https://example.com/alice-notes",
+                weeklyScheduleUTC: [
+                    { day: "Tuesday", time: "09:00" },
+                    { day: "Friday", time: "12:00" },
+                    { day: "Tuesday", time: "15:00" } // Another Tuesday session
+                ]
+            }
+        };
+
+        // Function to calculate time remaining until the next class (based on UTC schedule)
+        function calculateTimeRemaining(schedule) {
+            const nowLocal = new Date();
+            const viewerTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+            let closestClassTimeUTC = null;
+            let closestClassSchedule = null;
+
+            for (const classSchedule of schedule.weeklyScheduleUTC) {
+                const classDay = classSchedule.day;
+                const classTime = classSchedule.time;
+
+                const nextClassUTC = getNextClassDateTimeUTC(classDay, classTime, nowLocal); // Pass nowLocal
+
+                if (nextClassUTC > nowLocal.getTime()) {
+                    if (!closestClassTimeUTC || nextClassUTC < closestClassTimeUTC) {
+                        closestClassTimeUTC = nextClassUTC;
+                        closestClassSchedule = classSchedule;
+                    }
+                }
+            }
+
+            if (!closestClassSchedule) return null;
+
+            const timeDiff = closestClassTimeUTC - nowLocal.getTime(); // Difference between future UTC and current local
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            // Convert the next class UTC time to the viewer's local time for display
+            const closestClassTimeViewerLocal = new Date(closestClassTimeUTC);
+
+            return { days, hours, minutes, seconds, closestClassSchedule, closestClassTimeViewerLocal };
         }
-      }
 
-      if (!closestClass) return null;
+        // Function to get the next class UTC timestamp
+        function getNextClassDateTimeUTC(day, time, nowLocal) {
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const targetDayIndex = dayNames.indexOf(day);
+            const currentDayIndexUTC = nowLocal.getUTCDay(); // Use getUTCDay for UTC day
 
-      const timeDiff = closestClassTime - userTime;
-      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            let daysUntilClass = targetDayIndex - currentDayIndexUTC;
+            if (daysUntilClass < 0) {
+                daysUntilClass += 7;
+            } else if (daysUntilClass === 0) {
+                const [hours, minutes] = time.split(':').map(Number);
+                const currentUTCHours = nowLocal.getUTCHours();
+                const currentUTCMinutes = nowLocal.getUTCMinutes();
 
-      return { days, hours, minutes, seconds, closestClass, closestClassTime };
-    }
+                if (hours < currentUTCHours || (hours === currentUTCHours && minutes <= currentUTCMinutes)) {
+                    daysUntilClass += 7;
+                }
+            }
 
-    // Function to get the next class date based on the day and time
-    function getNextClassDate(day, time, currentTime) {
-      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const targetDayIndex = dayNames.indexOf(day);
-      const currentDayIndex = currentTime.getDay();
-      
-      // Calculate the difference in days
-      let daysUntilClass = targetDayIndex - currentDayIndex;
-      if (daysUntilClass <= 0) {
-        daysUntilClass += 7; // Next week if the class is in the past week
-      }
+            const nextClassUTCDate = new Date(Date.UTC(
+                nowLocal.getUTCFullYear(),
+                nowLocal.getUTCMonth(),
+                nowLocal.getUTCDate() + daysUntilClass,
+                parseInt(time.split(':')[0], 10),
+                parseInt(time.split(':')[1], 10),
+                0,
+                0
+            ));
 
-      // Get the current day's date
-      const classDate = new Date(currentTime);
-      classDate.setDate(classDate.getDate() + daysUntilClass);
-      const [classHours, classMinutes] = time.split(":").map(num => parseInt(num));
-      classDate.setHours(classHours, classMinutes, 0, 0);
+            return nextClassUTCDate.getTime();
+        }
 
-      return classDate;
-    }
+        // Function to display countdown and update every second
+        function updateCountdownForUser(email, userSchedule) {
+            const classLinkElement = document.getElementById("class-link");
+            const notesLinkElement = document.getElementById("notes-link");
+            const nextClassDayElement = document.getElementById("next-class-day");
+            const nextClassTimeElement = document.getElementById("next-class-time");
+            const daysElement = document.getElementById("days");
+            const hoursElement = document.getElementById("hours");
+            const minutesElement = document.getElementById("minutes");
+            const secondsElement = document.getElementById("seconds");
+            const userNotFoundDiv = document.getElementById("user-not-found");
+            const scheduleDisplayDiv = document.getElementById("schedule-display");
+            const scheduleBody = document.getElementById("schedule-body");
 
-    // Function to display countdown and update every second
-    function updateCountdownForUser(email, userSchedule) {
-      const userInfoDiv = document.getElementById("user-info");
+            function refreshCountdown() {
+                const timeRemainingData = calculateTimeRemaining(userSchedule);
 
-      // Create individual containers for class info
-      const classLinkContainer = document.createElement("div");
-      classLinkContainer.classList.add("container");
-      const notesLinkContainer = document.createElement("div");
-      notesLinkContainer.classList.add("container");
-      const nextClassContainer = document.createElement("div");
-      nextClassContainer.classList.add("container");
-      const timeRemainingContainer = document.createElement("div");
-      timeRemainingContainer.classList.add("container");
+                if (timeRemainingData) {
+                    const { days, hours, minutes, seconds, closestClassSchedule, closestClassTimeViewerLocal } = timeRemainingData;
 
-      // Function to refresh and update the countdown
-      function refreshCountdown() {
-        const timeRemaining = calculateTimeRemaining(userSchedule);
+                    classLinkElement.href = userSchedule.classLink;
+                    notesLinkElement.href = userSchedule.notesLink;
+                    nextClassDayElement.textContent = closestClassTimeViewerLocal.toLocaleDateString('en-US', { weekday: 'long' });
+                    nextClassTimeElement.textContent = closestClassTimeViewerLocal.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                    daysElement.textContent = days;
+                    hoursElement.textContent = hours;
+                    minutesElement.textContent = minutes;
+                    secondsElement.textContent = seconds;
+                    userNotFoundDiv.style.display = 'none';
 
-        // Clear previous content
-        classLinkContainer.innerHTML = '';
-        notesLinkContainer.innerHTML = '';
-        nextClassContainer.innerHTML = '';
-        timeRemainingContainer.innerHTML = '';
+                    const totalSecondsRemaining = (days * 24 * 3600) + (hours * 3600) + (minutes * 60) + seconds;
 
-        if (timeRemaining) {
-          const { days, hours, minutes, seconds, closestClass } = timeRemaining;
+                    if (totalSecondsRemaining < 600) {
+                        // window.open(userSchedule.classLink, '_blank');
+                        // clearInterval(countdownInterval);
+                    }
+                } else {
+                    nextClassDayElement.textContent = "No";
+                    nextClassTimeElement.textContent = "upcoming class";
+                    daysElement.textContent = "0";
+                    hoursElement.textContent = "0";
+                    minutesElement.textContent = "0";
+                    secondsElement.textContent = "0";
+                    userNotFoundDiv.style.display = 'none'; // Ensure this is hidden if a previous user was not found
+                }
+            }
 
-          // Class Link and Notes Link container
-          classLinkContainer.innerHTML = `
-            <h3>Class Links</h3>
-            <p><a href="${userSchedule.classLink}" target="_blank">Join Class</a></p>
-          `;
-          notesLinkContainer.innerHTML = `
-            <h3>Notes</h3>
-            <p><a href="${userSchedule.notesLink}" target="_blank">View Notes</a></p>
-          `;
+            // Display the weekly schedule in a table in the user's local time zone
+            if (userSchedule && userSchedule.weeklyScheduleUTC) {
+                scheduleDisplayDiv.style.display = 'block';
+                scheduleBody.innerHTML = ''; // Clear previous schedule
 
-          // Next Class container
-          nextClassContainer.innerHTML = `
-            <h3>Next Class</h3>
-            <p>${closestClass.day} at ${closestClass.time}</p>
-          `;
+                userSchedule.weeklyScheduleUTC.forEach(item => {
+                    const row = scheduleBody.insertRow();
+                    const dayCell = row.insertCell();
+                    const timeCell = row.insertCell();
 
-          // Time remaining container
-          timeRemainingContainer.innerHTML = `
-            <h3>Time Remaining</h3>
-            <p class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s</p>
-          `;
+                    // Create a Date object from the UTC time, assuming the date is today in UTC
+                    const [hoursUTC, minutesUTC] = item.time.split(':').map(Number);
+                    const nowUTC = new Date();
+                    const classDateUTC = new Date(Date.UTC(nowUTC.getUTCFullYear(), nowUTC.getUTCMonth(), nowUTC.getUTCDate(), hoursUTC, minutesUTC, 0, 0));
+
+                    // Format the date and time in the user's local time zone
+                    const localDay = classDateUTC.toLocaleDateString('en-US', { weekday: 'long' });
+                    const localTime = classDateUTC.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    dayCell.textContent = localDay;
+                    timeCell.textContent = localTime;
+                });
+            } else {
+                scheduleDisplayDiv.style.display = 'none';
+            }
+
+            refreshCountdown();
+            setInterval(refreshCountdown, 1000);
+        }
+
+        function getEmailFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('email');
+        }
+
+        const email = getEmailFromURL();
+        if (email && schedule[email]) {
+            updateCountdownForUser(email, schedule[email]);
         } else {
-          nextClassContainer.innerHTML = `<h3>Next Class</h3><p>No upcoming class found.</p>`;
+            document.getElementById("user-info").style.display = 'none';
+            document.getElementById("schedule-display").style.display = 'none';
+            document.getElementById("user-not-found").style.display = 'block';
         }
-
-        // Append the updated containers
-        userInfoDiv.innerHTML = '';  // Clear any previous content
-        userInfoDiv.appendChild(classLinkContainer);
-        userInfoDiv.appendChild(notesLinkContainer);
-        userInfoDiv.appendChild(nextClassContainer);
-        userInfoDiv.appendChild(timeRemainingContainer);
-      }
-
-      // Update the countdown every second
-      refreshCountdown(); // Initial update
-      setInterval(refreshCountdown, 1000); // Update every second
-    }
-
-    // Get email from URL query parameter
-    function getEmailFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('email');
-    }
-
-    // Fetch the schedule and display based on the email query parameter
-    const email = getEmailFromURL();
-    if (email && schedule[email]) {
-      updateCountdownForUser(email, schedule[email]);
-    } else {
-      document.getElementById("user-info").innerHTML = `<p>User not found or invalid email parameter.</p>`;
-    }
-  </script>
+    </script>
 
 </body>
 </html>

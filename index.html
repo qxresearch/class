@@ -30,33 +30,32 @@ body {
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 200px; /* Adjust as needed */
+  width: 10%;
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 0px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   color: rgb(120, 120, 120);
   text-align: center;
   z-index: 2;
- }
+  align-items: center;
+}
 
- .instructor-info-container img {
+.instructor-info-container img {
   width: 100%;
   border-radius: 8px;
-  margin-bottom: 10px;
- }
+}
 
- .instructor-info-container p {
+.instructor-info-container p {
   margin-bottom: 0;
   text-align: center;
- }
+}
 
- /* Homework Container (Top Right) */
- .homework-container {
+.homework-container {
   position: absolute;
   top: 20px;
   right: 20px;
-  width: 150px; /* Adjust as needed */
+  width: 150px;
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
@@ -64,47 +63,38 @@ body {
   color: rgb(255, 0, 0);
   text-align: center;
   z-index: 2;
- }
+}
 
- .homework-container h3 {
+.homework-container h3 {
   margin-top: 0;
- }
+}
 
- /* Mobile View Adjustments - Hide if screen width is small */
- @media (max-width: 650px) { /* Adjust breakpoint as needed */
-  .instructor-info-container,
-  .homework-container {
-  display: none;
-  }
- }
-
-
-  .user-info {
+.user-info {
   margin: 20px 0;
   width: 420px;
- }
+}
 
-  .links-outer-container {
+.links-outer-container {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
- }
+}
 
-  .links-container {
+.links-container {
   flex: 1;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   padding: 15px;
- }
+}
 
-  .container {
+.container {
   position: relative;
   width: 420px;
   max-height: 80vh;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 20px rgba(51, 51, 51, 0.3);
   padding: 20px;
   color: rgb(0, 0, 0);
   text-align: center;
@@ -112,14 +102,11 @@ body {
   z-index: 1;
   margin-bottom: 10px;
   box-sizing: border-box;
- }
+}
 
- .contshad{
-  position: relative;
+.contshad {
   width: 420px;
   max-height: 80vh;
-  /* backdrop-filter: blur(5px); */
-  /* background-color: rgb(0, 0, 0); */
   border: 2px solid rgba(175, 175, 175, 0.2);
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -130,96 +117,211 @@ body {
   z-index: 1;
   margin-bottom: 10px;
   box-sizing: border-box;
+}
 
- }
+.contshad-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 
-  .schedule-container {
+.schedule-container {
   width: 420px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   padding: 20px;
-  
   color: rgb(34, 34, 34);
-  /* margin-top: 20px; */
-  /* margin-bottom: 20px; */
   text-align: left;
- }
+}
 
-  .paragraph {
+.paragraph {
   color: rgb(110, 110, 110);
   text-align: center;
- }
+}
 
-  .link-title {
+.link-title {
   font-size: 1.1em;
   margin-bottom: 5px;
- }
+}
 
-  a {
+a {
   font-size: 1em;
   color: #6a9eff;
   text-decoration: none;
- }
+}
 
-  a:hover {
+a:hover {
   color: lightgrey;
- }
+}
 
-  a:visited {
-  color:  #8a37ff;;
- }
+a:visited {
+  color: #8a37ff;
+}
 
-  .schedule-container h3 {
+.schedule-container h3 {
   text-align: center;
   margin-bottom: 10px;
- }
+}
 
-  .schedule-table {
+.schedule-table {
   width: 100%;
   border-collapse: collapse;
-  
- }
+}
 
-  .schedule-table th,
-  .schedule-table td {
+.schedule-table th,
+.schedule-table td {
   padding: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: left;
   text-align: center;
- }
+}
 
-  .schedule-table th {
+.schedule-table th {
   font-weight: bold;
-  text-align: center;
- }
+}
 
-  .schedule-table tr:last-child td {
+.schedule-table tr:last-child td {
   border-bottom: none;
- }
+}
 
-  /* Mobile View Adjustments */
-  @media (max-width: 600px) {
+/* Responsive: Hide on small screens */
+@media (max-width: 650px) {
   .instructor-info-container,
   .homework-container {
-  display: none; /* Hide on smaller screens */
+    display: none;
   }
+
+  .contshad-row {
+    flex-direction: column;
+    align-items: center;
   }
+
+  .contshad {
+    width: 90%;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.instructor-wrapper {
+  position: absolute;
+  top: 0px;
+  left: 20px;
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2;
+}
+
+.instructor-info-container {
+  position: relative;
+  width: 100%; /* Ensure the container takes up the full available width */
+  padding: 1dvb; /* Increase padding for better content spacing */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(51, 51, 51, 0.3);
+  color: rgb(35, 35, 35);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+  word-wrap: break-word; 
+}
+
+.instructor-info-container .extra-content {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  text-align: left;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+
+.instructor-info-container:hover .extra-content {
+  opacity: 1;
+  max-height: 500px;
+  transition: opacity 0s ease, max-height 1s ease;
+  text-align: left;
+}
+
+.instructor-info-container:hover .extra-content {
+  opacity: 1;
+  max-height: 500px;
+}
+
+.instructor-info-container img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.instructor-info-container > p {
+  color:rgb(104, 104, 104);
+  font-size: 0.8rem;
+  font-weight: 450;
+  margin: 0 0 2px 0;
+  text-align: center;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+
   </style>
 </head>
 
 
 
 <body>
-<!--   
-  <div class="instructor-info-container">
-    <img src="kk.png" alt="Instructor Photo">
-        <p> <code>rohitmandal814566@gmail.com</code> </p>     
-  </div>
 
   
-   -->
+
+  <div class="instructor-wrapper">
+  <div class="instructor-info-container">
+    <p><strong>Homework</strong></p>
+    <div class="extra-content">
+      <p><code>Assignment 1 : Operators</code></p>
+    </div>
+  </div>
+
+  <div class="instructor-info-container">
+    <p><strong>Assignment</strong></p>
+    <div class="extra-content">
+      <p><code>No pending assignment!</code></p>
+    </div>
+  </div>
+
+  <!-- <div class="instructor-info-container">
+    <p><strong>Instructor</strong></p>
+    <div class="extra-content">
+      <img src="hexadecimal.png" alt="Instructor Photo">
+      <li> Machine Learning Rsearcher
+      <li>Stanford CIP Section Leader
+      <p><code>github : xiaowuc2</code></p>
+    </div>
+  </div> -->
+  
+</div>
+
+
+
+<!-- 
+  <div class="homework-container" >
+    <p>User not found or invalid email parameter.</p>
+</div> -->
+
 
     <div id="user-info">
 
@@ -282,6 +384,7 @@ body {
             "alvina": {
                 classLink: "https://meet.google.com/xdz-xaob-rdk",
                 notesLink: "https://share.goodnotes.com/s/vqohuFAlaY5veLJBnno7ri",
+                homework: "Assignment 2 : DataTypes",
                 weeklyScheduleUTC: [
                     { day: "Monday", time: "08:30" },
                     { day: "Tuesday", time: "08:30" },
@@ -529,6 +632,8 @@ body {
             document.getElementById("schedule-display").style.display = 'none';
             document.getElementById("user-not-found").style.display = 'block';
         }
+        
+
     </script>
 </body>
 </html>

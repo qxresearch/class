@@ -70,6 +70,7 @@ body::before {
   text-align: center;
   z-index: 2;
   align-items: center;
+  
 }
 
 .instructor-info-container img {
@@ -424,9 +425,9 @@ a:visited {
   color: white;
   font-family: monospace;
   max-width: 90%;
+  
+  
 }
-
-
 
 
 
@@ -454,6 +455,7 @@ a:visited {
   -webkit-mask-size: 100% 100%;
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
+  
 }
 
 
@@ -473,9 +475,33 @@ a:visited {
 .progress-list-vertical {
   display: flex;
   flex-direction: column;
+  
   gap: 10px;
   padding-bottom: 8px; /* buffer at bottom */
   padding-top: 8px;     /* buffer at top */
+}
+
+
+
+
+
+
+
+
+.assignment-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 10%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: rgb(120, 120, 120);
+  text-align: center;
+  z-index: 2;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .assignment {
@@ -488,8 +514,10 @@ a:visited {
 }
 
 .assignment.unlocked {
-  background-color: #4A90E2;  /* soft blue */
-  color: #f5f5f5;
+  /* background-color: #4A90E2;   */
+  /* color: #f5f5f5; */
+  background-color: white;
+  color: black;
 }
 
 .assignment.locked {
@@ -498,6 +526,34 @@ a:visited {
   cursor: not-allowed;
 }
 
+.assignment-scroll-wrapper-vertical {
+  max-height: 182px;
+  overflow-y: auto;
+  margin-top: 0px;
+  padding: 10px 4px;
+  scroll-behavior: smooth;
+  position: relative;
+
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout paint;
+
+  /* Fade at top and bottom */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar in WebKit browsers (Chrome, Safari) */
+.assignment-scroll-wrapper-vertical::-webkit-scrollbar {
+  display: none;
+}
 
 
 
@@ -568,12 +624,9 @@ a:visited {
   box-shadow: 0 0 4px 1px #ff4c4c88;
 }
 
-
 .questions-panel {
   margin-top: 12px;
-  background-color: rgba(40, 40, 40, 0.6); /* Stronger dark gray with mild transparency */
-  backdrop-filter: blur(2px);             /* Gentle blur */
-  -webkit-backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   font-size: 13px;
@@ -584,7 +637,6 @@ a:visited {
   display: block;
   color: #000000; /* White text for contrast */
 }
-
 
 .panel-title {
   font-weight: bold;
@@ -612,8 +664,6 @@ a:visited {
   display: none;
 }
 
-
-/* pleaseplease  */
 .topic-tab {
   flex-shrink: 0;
   background: #ffffff;
@@ -634,19 +684,18 @@ a:visited {
   color: #fff;
   cursor: not-allowed;
 }
+
+/* New selected tab style */
+.topic-tab.selected {
+  background-color: #a8d0e6; /* Subtle light blue color for selected tabs */
+  color: #fff; /* White text for contrast */
+}
+
 .questions-display {
   margin-top: 8px;
   max-height: 220px; /* Control the height of the scrollable area */
   overflow-y: auto; /* Enables scrolling only within the questions-display */
   position: relative;
-  
-  /* Fading effect for top and bottom */
-  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
 }
 
 .questions-display::-webkit-scrollbar {
@@ -661,7 +710,6 @@ a:visited {
 .questions-display::-webkit-scrollbar-track {
   background: transparent; /* Transparent track */
 }
-
 
 .topic-title {
   font-weight: bold;
@@ -709,7 +757,7 @@ a:visited {
     <div class="instructor-info-container" id="progress-container">
       <!-- <p><strong>Assignments</strong></p> -->
       <p><strong></strong></p>
-      <div class="progress-scroll-wrapper-vertical">
+      <div class="assignment-scroll-wrapper-vertical">
         <div class="progress-list-vertical" id="progress-list">
         </div>
       </div>
@@ -857,7 +905,7 @@ a:visited {
                 notesLink: "https://share.goodnotes.com/s/vqohuFAlaY5veLJBnno7ri",
                 homework: "Assignment 3 : Typecasting",
                 assignment: "for future ",
-                progress: -1,
+                progress: 0,
                 qaccess : [0, 1, 2],
                 pitfalls: [
                     "Always check for edge cases in your code.",
@@ -933,6 +981,20 @@ a:visited {
                 weeklyScheduleUTC: [
                     { day: "Wednesday", time: "17:30" },
                     { day: "Saturday", time: "07:00" }
+                ]
+            },
+            "gabriel": {
+                classLink: "https://meet.google.com/xdz-xaob-rdk",
+                notesLink: "https://share.goodnotes.com/s/IDTYnQrsOIxU3tcnXPLDDn",
+                homework: "Go through the Notes!",
+                assignment: "",
+                qaccess : [0],
+                progress: -1,
+                pitfalls: [
+                    "Consider using a variable for logic (String based Condition)"
+                ],
+                weeklyScheduleUTC: [
+                    { day: "Saturday", time: "13:00" }
                 ]
             },
             "rohitmandal814566@gmail.com": {
@@ -1270,166 +1332,117 @@ const urlParams = new URLSearchParams(window.location.search);
 
 
 
+// Function to get the email query parameter from the URL
+function getEmailFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('email');  // returns the value of 'email' parameter in the URL
+}
 
-  // Function to get the email query parameter from the URL
-  function getEmailFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('email');  // returns the value of 'email' parameter in the URL
-  }
+// Get the email from the URL (e.g., qxresearch.org/class/?email=alvina)
+const studentEmail = getEmailFromURL();
 
-  // Get the email from the URL (e.g., qxresearch.org/class/?email=alvina)
-  const studentEmail = getEmailFromURL();
+// Ensure that the email exists in the schedule
+if (studentEmail && schedule[studentEmail]) {
+  const studentData = schedule[studentEmail];
 
-  // Ensure that the email exists in the schedule
-  if (studentEmail && schedule[studentEmail]) {
-      const studentData = schedule[studentEmail];
+  // Select the DOM elements where homework and pitfalls info will go
+  const homeworkText = document.getElementById('homework-text');
+  const pitfallList = document.getElementById('pitfall-list'); // Target the pitfall list
 
-      // Select the DOM elements where homework and pitfalls info will go
-      const homeworkText = document.getElementById('homework-text');
-      const pitfallList = document.getElementById('pitfall-list'); // Target the pitfall list
+  // Update the homework section dynamically
+  homeworkText.textContent = studentData.homework || 'No reminders assigned!';
 
-      // Update the homework section dynamically
-      homeworkText.textContent = studentData.homework || 'No reminders assigned!';
-
-      // Clear existing pitfalls and dynamically add them as <li> items
-      pitfallList.innerHTML = ""; // Clear any previous list items
-      if (studentData.pitfalls && studentData.pitfalls.length > 0) {
-          studentData.pitfalls.forEach(pitfall => {
-              const li = document.createElement('li');
-              li.textContent = pitfall;
-              pitfallList.appendChild(li);
-          });
-      } else {
+  // Clear existing pitfalls and dynamically add them as <li> items
+  pitfallList.innerHTML = ""; // Clear any previous list items
+  if (studentData.pitfalls && studentData.pitfalls.length > 0) {
+      studentData.pitfalls.forEach(pitfall => {
           const li = document.createElement('li');
-          li.textContent = 'No pitfalls reported';
+          li.textContent = pitfall;
           pitfallList.appendChild(li);
-      }
-
-      // ----- QUESTIONS TAB SECTION START -----
-      const questionsPanel = document.getElementById("questions-panel");
-      const topicNameDisplay = document.getElementById("selected-topic-name");
-      const questionsList = document.getElementById("questions-list");
-      const topicsScroll = document.getElementById("topic-tabs");
-
-      const topicsData = [
-        {
-          name: "Typecasting",
-          questions: [
-            "type()",
-            "int()",
-            "float()",
-            "bool()",
-            "type()",
-            "type()",
-            "int()",
-            "float()",
-            "bool()",
-            "type()",
-            "int()",
-            "float()",
-            "bool()",
-            "type()",
-            "int()",
-            "float()",
-            "bool()",
-            "int()",
-            "float()",
-            "bool()",
-            "type()",
-            "int()",
-            "float()",
-            "bool()",
-            "str()"
-          ]
-        },
-        {
-          name: "Loops",
-          questions: [
-            "Explain the difference between while and for loops?",
-            "How do you break out of nested loops?",
-            "What is a loop invariant?"
-          ]
-        },
-        {
-          name: "Loops",
-          questions: [
-            "Explain the difference between while and for loops?",
-            "How do you break out of nested loops?",
-            "What is a loop invariant?"
-          ]
-        },
-        {
-          name: "Loops",
-          questions: [
-            "Explain the difference between while and for loops?",
-            "How do you break out of nested loops?",
-            "What is a loop invariant?"
-          ]
-        },
-        {
-          name: "Loops",
-          questions: [
-            "Explain the difference between while and for loops?",
-            "How do you break out of nested loops?",
-            "What is a loop invariant?"
-          ]
-        },
-        {
-          name: "Lists",
-          questions: [
-            "How to append vs extend a list?",
-            "What are list comprehensions?",
-            "Difference between shallow copy and deep copy of lists?"
-          ]
-        },
-        {
-          name: "Functions",
-          questions: [
-            "How do default parameters work?",
-            "Explain scope with examples.",
-            "What is recursion?"
-          ]
-        }
-      ];
-
-      topicsData.forEach((topicObj, i) => {
-        const tab = document.createElement("div");
-        tab.className = "topic-tab";
-        tab.textContent = topicObj.name;
-
-        if (!studentData.qaccess || !studentData.qaccess.includes(i)) {
-          tab.classList.add("locked");
-          tab.title = "Access Denied";
-        } else {
-          tab.addEventListener("click", () => showQuestions(topicObj));
-        }
-
-        topicsScroll.appendChild(tab);
       });
-
-      function showQuestions(topicObj) {
-        topicNameDisplay.textContent = topicObj.name;
-        questionsList.innerHTML = "";
-        topicObj.questions.forEach(q => {
-          const li = document.createElement("li");
-          li.textContent = q;
-          questionsList.appendChild(li);
-        });
-        questionsPanel.style.display = "block";
-      }
-      // ----- QUESTIONS TAB SECTION END -----
-
   } else {
-      // In case no valid email is found in the URL or no data for the student
-      const homeworkText = document.getElementById('homework-text');
-      const pitfallList = document.getElementById('pitfall-list');
-
-      homeworkText.textContent = 'Student not found!';
-      pitfallList.innerHTML = '<li>Student not found!</li>';
+      const li = document.createElement('li');
+      li.textContent = 'No pitfalls reported';
+      pitfallList.appendChild(li);
   }
 
+  // ----- QUESTIONS TAB SECTION START -----
+  const questionsPanel = document.getElementById("questions-panel");
+  const topicNameDisplay = document.getElementById("selected-topic-name");
+  const questionsList = document.getElementById("questions-list");
+  const topicsScroll = document.getElementById("topic-tabs");
 
+  // Flattened questions data (no 'name' field anymore)
+  const questionsData = [
+    { topic: "Typecasting", questions: [
+      "type() : Returns the datatype",
+      "int() : Converts parameter to int",
+      "float() : Converts parameter to float",
+      "bool() : Converts parameter to bool",
+      "str() : Converts parameter to str"
+    ] },
+    { topic: "Loops", questions: [
+      "Explain the difference between while and for loops?",
+      "How do you break out of nested loops?",
+      "What is a loop invariant?"
+    ] },
+    { topic: "Lists", questions: [
+      "How to append vs extend a list?",
+      "What are list comprehensions?",
+      "Difference between shallow copy and deep copy of lists?"
+    ] },
+    { topic: "Functions", questions: [
+      "How do default parameters work?",
+      "Explain scope with examples.",
+      "What is recursion?"
+    ] }
+  ];
 
+  // Creating the tabs based on the questions
+  questionsData.forEach((topicObj, i) => {
+    const tab = document.createElement("div");
+    tab.className = "topic-tab";
+    tab.textContent = topicObj.topic;
+
+    if (!studentData.qaccess || !studentData.qaccess.includes(i)) {
+      tab.classList.add("locked");
+      tab.title = "Access Denied";
+    } else {
+      tab.addEventListener("click", () => {
+        // Remove the selected class from all topic tabs
+        document.querySelectorAll(".topic-tab").forEach(t => t.classList.remove("selected"));
+        // Add the selected class to the clicked tab
+        tab.classList.add("selected");
+        
+        // Show questions related to the selected topic
+        showQuestions(topicObj.questions);  // Pass only the questions of the selected topic
+      });
+    }
+
+    topicsScroll.appendChild(tab);
+  });
+
+  // Function to display the questions of the selected topic
+  function showQuestions(questionsArray) {
+    topicNameDisplay.textContent = "";  // You can display a general title or keep it empty
+    questionsList.innerHTML = ""; // Clear any previous questions
+    questionsArray.forEach(q => {
+      const li = document.createElement("li");
+      li.textContent = q;
+      questionsList.appendChild(li);
+    });
+    questionsPanel.style.display = "block";
+  }
+  // ----- QUESTIONS TAB SECTION END -----
+
+} else {
+  // In case no valid email is found in the URL or no data for the student
+  const homeworkText = document.getElementById('homework-text');
+  const pitfallList = document.getElementById('pitfall-list');
+
+  homeworkText.textContent = 'Student not found!';
+  pitfallList.innerHTML = '<li>Student not found!</li>';
+}
 
 
 
@@ -1521,39 +1534,24 @@ topicTabs.addEventListener('scroll', checkScrollPosition);
 // Initially apply the fade effect based on the current scroll position
 checkScrollPosition();
 
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const questionsDisplay = document.querySelector(".questions-display");
-
-    function updateMask() {
-        const scrollTop = questionsDisplay.scrollTop;
-        const scrollHeight = questionsDisplay.scrollHeight;
-        const clientHeight = questionsDisplay.clientHeight;
-
-        if (scrollTop === 0) {
-            // Hide top fade when at the very top
-            questionsDisplay.style.maskImage = "linear-gradient(to bottom, black 0%, black 10%, black 90%, transparent 100%)";
-            questionsDisplay.style.webkitMaskImage = "linear-gradient(to bottom, black 0%, black 10%, black 90%, transparent 100%)";
-        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
-            // Hide bottom fade when scrolled to the bottom
-            questionsDisplay.style.maskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 100%)";
-            questionsDisplay.style.webkitMaskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 100%)";
-        } else {
-            // Default fade effect
-            questionsDisplay.style.maskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)";
-            questionsDisplay.style.webkitMaskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)";
-        }
-    }
-
-    questionsDisplay.addEventListener("scroll", updateMask);
-
-    // Ensure the effect is set properly when the page loads
-    updateMask();
+// enables horizontal and vertical scroll
+topicTabs.addEventListener('wheel', (event) => {
+  if (event.deltaY !== 0 && !event.ctrlKey) { 
+    // Prevent default ONLY for mouse wheel vertical scrolling
+    event.preventDefault();
+    topicTabs.scrollLeft += event.deltaY; // Enable horizontal scrolling
+  }
 });
+
+
+
+
+
+
+
+
+
+
     </script>
 </body>
 </html>

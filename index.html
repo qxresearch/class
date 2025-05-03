@@ -569,6 +569,113 @@ a:visited {
 }
 
 
+.questions-panel {
+  margin-top: 12px;
+  background-color: rgba(40, 40, 40, 0.6); /* Stronger dark gray with mild transparency */
+  backdrop-filter: blur(2px);             /* Gentle blur */
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 12px 16px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: block;
+  color: #000000; /* White text for contrast */
+}
+
+
+.panel-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.topic-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  border-bottom: 0px solid #ccc;
+  scroll-snap-type: x mandatory;
+  position: relative;
+  mask-image: linear-gradient(to left, transparent 0%, black 90%, black 100%);  /* Right side fade */
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, black 90%, black 100%);
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari, Edge */
+.topic-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* pleaseplease  */
+.topic-tab {
+  flex-shrink: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  scroll-snap-align: start;
+}
+
+.topic-tab:hover {
+  background: #d0d0d0;
+}
+
+.topic-tab.locked {
+  background: #aaa;
+  color: #fff;
+  cursor: not-allowed;
+}
+.questions-display {
+  margin-top: 8px;
+  max-height: 220px; /* Control the height of the scrollable area */
+  overflow-y: auto; /* Enables scrolling only within the questions-display */
+  position: relative;
+  
+  /* Fading effect for top and bottom */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.questions-display::-webkit-scrollbar {
+  width: 4px; /* Thin scrollbar */
+}
+
+.questions-display::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3); /* Light transparent white */
+  border-radius: 6px; /* Rounded thumb */
+}
+
+.questions-display::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+
+.topic-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.questions-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+  color: #fdfdfd;
+}
+
 
 
   </style>
@@ -620,14 +727,24 @@ a:visited {
 
   </div>
   
-
   <div class="search-wrapper">
     <div class="search-bar-container">
       <img src="search.svg" alt="Search" class="search-icon">
       <input type="text" id="search-bar" placeholder="">
       <ul id="search-results" class="search-results"></ul>
     </div>
+    
     <div id="function-detail" class="function-detail"></div>
+  
+    <div id="questions-panel" class="questions-panel">
+      <h3 class="panel-title"></h3>
+      <div id="topic-tabs" class="topic-tabs"></div>
+      <div class="questions-display">
+        <div class="topic-title" id="selected-topic-name"></div>
+        <ul id="questions-list" class="questions-list"></ul>
+      </div>
+    </div>
+    
   </div>
   
 
@@ -689,9 +806,14 @@ a:visited {
       <span id="status-dot" class="status-dot offline"></span>
     </div>
     
-    <!-- <div class="container"> rohitmandal814566@gmail.com</div>
 
- -->
+
+
+
+
+
+    
+    <!-- <div class="container"> rohitmandal814566@gmail.com</div>-->
 
     <script>
         const pythonFunctions = {
@@ -736,6 +858,7 @@ a:visited {
                 homework: "Assignment 3 : Typecasting",
                 assignment: "for future ",
                 progress: -1,
+                qaccess : [0, 1, 2],
                 pitfalls: [
                     "Always check for edge cases in your code.",
                     "Handle None values properly."
@@ -752,7 +875,7 @@ a:visited {
                 notesLink: "https://share.goodnotes.com/s/vNOc9PcD0tjjHPh0mX4mj0",
                 homework: "Assignment 2 : DataTypes",
                 assignment: "",
-                progress: -1,
+                progress: 2,
                 weeklyScheduleUTC: [
                     { day: "Monday", time: "17:00" },
                     { day: "Saturday", time: "17:00" }
@@ -796,6 +919,20 @@ a:visited {
                     { day: "Thursday", time: "03:00" },
                     { day: "Friday", time: "03:00" },
                     { day: "Saturday", time: "03:00" }
+                ]
+            },
+            "janelle": {
+                classLink: "https://meet.google.com/xdz-xaob-rdk",
+                notesLink: "https://share.goodnotes.com/s/5a810e2uWB2kEVehvkKT8Q",
+                homework: "Go through the Notes!",
+                assignment: "",
+                progress: -1,
+                pitfalls: [
+                    "Generalize the code along with test cases"
+                ],
+                weeklyScheduleUTC: [
+                    { day: "Wednesday", time: "17:30" },
+                    { day: "Saturday", time: "07:00" }
                 ]
             },
             "rohitmandal814566@gmail.com": {
@@ -1131,48 +1268,174 @@ const urlParams = new URLSearchParams(window.location.search);
 
 
 
-// Function to get the email query parameter from the URL
-function getEmailFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('email');  // returns the value of 'email' parameter in the URL
-}
 
-// Get the email from the URL (e.g., qxresearch.org/class/?email=alvina)
-const studentEmail = getEmailFromURL();
 
-// Ensure that the email exists in the schedule
-if (studentEmail && schedule[studentEmail]) {
-    const studentData = schedule[studentEmail];
 
-    // Select the DOM elements where homework and pitfalls info will go
-    const homeworkText = document.getElementById('homework-text');
-    const pitfallList = document.getElementById('pitfall-list'); // Target the pitfall list
+  // Function to get the email query parameter from the URL
+  function getEmailFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('email');  // returns the value of 'email' parameter in the URL
+  }
 
-    // Update the homework section dynamically
-    homeworkText.textContent = studentData.homework || 'No reminders assigned!';
+  // Get the email from the URL (e.g., qxresearch.org/class/?email=alvina)
+  const studentEmail = getEmailFromURL();
 
-    // Clear existing pitfalls and dynamically add them as <li> items
-    pitfallList.innerHTML = ""; // Clear any previous list items
-    if (studentData.pitfalls && studentData.pitfalls.length > 0) {
-        studentData.pitfalls.forEach(pitfall => {
-            const li = document.createElement('li');
-            li.textContent = pitfall;
-            pitfallList.appendChild(li);
+  // Ensure that the email exists in the schedule
+  if (studentEmail && schedule[studentEmail]) {
+      const studentData = schedule[studentEmail];
+
+      // Select the DOM elements where homework and pitfalls info will go
+      const homeworkText = document.getElementById('homework-text');
+      const pitfallList = document.getElementById('pitfall-list'); // Target the pitfall list
+
+      // Update the homework section dynamically
+      homeworkText.textContent = studentData.homework || 'No reminders assigned!';
+
+      // Clear existing pitfalls and dynamically add them as <li> items
+      pitfallList.innerHTML = ""; // Clear any previous list items
+      if (studentData.pitfalls && studentData.pitfalls.length > 0) {
+          studentData.pitfalls.forEach(pitfall => {
+              const li = document.createElement('li');
+              li.textContent = pitfall;
+              pitfallList.appendChild(li);
+          });
+      } else {
+          const li = document.createElement('li');
+          li.textContent = 'No pitfalls reported';
+          pitfallList.appendChild(li);
+      }
+
+      // ----- QUESTIONS TAB SECTION START -----
+      const questionsPanel = document.getElementById("questions-panel");
+      const topicNameDisplay = document.getElementById("selected-topic-name");
+      const questionsList = document.getElementById("questions-list");
+      const topicsScroll = document.getElementById("topic-tabs");
+
+      const topicsData = [
+        {
+          name: "Typecasting",
+          questions: [
+            "type()",
+            "int()",
+            "float()",
+            "bool()",
+            "type()",
+            "type()",
+            "int()",
+            "float()",
+            "bool()",
+            "type()",
+            "int()",
+            "float()",
+            "bool()",
+            "type()",
+            "int()",
+            "float()",
+            "bool()",
+            "int()",
+            "float()",
+            "bool()",
+            "type()",
+            "int()",
+            "float()",
+            "bool()",
+            "str()"
+          ]
+        },
+        {
+          name: "Loops",
+          questions: [
+            "Explain the difference between while and for loops?",
+            "How do you break out of nested loops?",
+            "What is a loop invariant?"
+          ]
+        },
+        {
+          name: "Loops",
+          questions: [
+            "Explain the difference between while and for loops?",
+            "How do you break out of nested loops?",
+            "What is a loop invariant?"
+          ]
+        },
+        {
+          name: "Loops",
+          questions: [
+            "Explain the difference between while and for loops?",
+            "How do you break out of nested loops?",
+            "What is a loop invariant?"
+          ]
+        },
+        {
+          name: "Loops",
+          questions: [
+            "Explain the difference between while and for loops?",
+            "How do you break out of nested loops?",
+            "What is a loop invariant?"
+          ]
+        },
+        {
+          name: "Lists",
+          questions: [
+            "How to append vs extend a list?",
+            "What are list comprehensions?",
+            "Difference between shallow copy and deep copy of lists?"
+          ]
+        },
+        {
+          name: "Functions",
+          questions: [
+            "How do default parameters work?",
+            "Explain scope with examples.",
+            "What is recursion?"
+          ]
+        }
+      ];
+
+      topicsData.forEach((topicObj, i) => {
+        const tab = document.createElement("div");
+        tab.className = "topic-tab";
+        tab.textContent = topicObj.name;
+
+        if (!studentData.qaccess || !studentData.qaccess.includes(i)) {
+          tab.classList.add("locked");
+          tab.title = "Access Denied";
+        } else {
+          tab.addEventListener("click", () => showQuestions(topicObj));
+        }
+
+        topicsScroll.appendChild(tab);
+      });
+
+      function showQuestions(topicObj) {
+        topicNameDisplay.textContent = topicObj.name;
+        questionsList.innerHTML = "";
+        topicObj.questions.forEach(q => {
+          const li = document.createElement("li");
+          li.textContent = q;
+          questionsList.appendChild(li);
         });
-    } else {
-        const li = document.createElement('li');
-        li.textContent = 'No pitfalls reported';
-        pitfallList.appendChild(li);
-    }
+        questionsPanel.style.display = "block";
+      }
+      // ----- QUESTIONS TAB SECTION END -----
 
-} else {
-    // In case no valid email is found in the URL or no data for the student
-    const homeworkText = document.getElementById('homework-text');
-    const pitfallList = document.getElementById('pitfall-list');
+  } else {
+      // In case no valid email is found in the URL or no data for the student
+      const homeworkText = document.getElementById('homework-text');
+      const pitfallList = document.getElementById('pitfall-list');
 
-    homeworkText.textContent = 'Student not found!';
-    pitfallList.innerHTML = '<li>Student not found!</li>';
-}
+      homeworkText.textContent = 'Student not found!';
+      pitfallList.innerHTML = '<li>Student not found!</li>';
+  }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1224,8 +1487,73 @@ window.addEventListener('mousemove', scheduleOnlineStatus);
 window.addEventListener('keydown', scheduleOnlineStatus);
 
 
+const topicTabs = document.querySelector('.topic-tabs');
+
+// Function to check scroll position and apply fade effect accordingly
+function checkScrollPosition() {
+  const maxScroll = topicTabs.scrollWidth - topicTabs.clientWidth;
+  const scrollPos = topicTabs.scrollLeft;
+
+  // Fade effect for right side when scrolled
+  if (scrollPos < maxScroll) {
+    topicTabs.style.maskImage = 'linear-gradient(to left, transparent 0%, black 90%, black 100%)';
+    topicTabs.style.webkitMaskImage = 'linear-gradient(to left, transparent 0%, black 90%, black 100%)';
+  } else {
+    // No fade on the right side when fully scrolled
+    topicTabs.style.maskImage = 'none';
+    topicTabs.style.webkitMaskImage = 'none';
+  }
+
+  // Fade effect for left side when scrolled to the right but not at the end
+  if (scrollPos > 0 && scrollPos < maxScroll) {
+    topicTabs.style.maskImage = 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)';
+    topicTabs.style.webkitMaskImage = 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)';
+  } else if (scrollPos === 0) {
+    // No fade on the left side when at the beginning
+    topicTabs.style.maskImage = 'linear-gradient(to left, transparent 0%, black 90%, black 100%)';
+    topicTabs.style.webkitMaskImage = 'linear-gradient(to left, transparent 0%, black 10%, black 100%)';
+  }
+}
+
+// Call the function on scroll event
+topicTabs.addEventListener('scroll', checkScrollPosition);
+
+// Initially apply the fade effect based on the current scroll position
+checkScrollPosition();
 
 
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const questionsDisplay = document.querySelector(".questions-display");
+
+    function updateMask() {
+        const scrollTop = questionsDisplay.scrollTop;
+        const scrollHeight = questionsDisplay.scrollHeight;
+        const clientHeight = questionsDisplay.clientHeight;
+
+        if (scrollTop === 0) {
+            // Hide top fade when at the very top
+            questionsDisplay.style.maskImage = "linear-gradient(to bottom, black 0%, black 10%, black 90%, transparent 100%)";
+            questionsDisplay.style.webkitMaskImage = "linear-gradient(to bottom, black 0%, black 10%, black 90%, transparent 100%)";
+        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+            // Hide bottom fade when scrolled to the bottom
+            questionsDisplay.style.maskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 100%)";
+            questionsDisplay.style.webkitMaskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 100%)";
+        } else {
+            // Default fade effect
+            questionsDisplay.style.maskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)";
+            questionsDisplay.style.webkitMaskImage = "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)";
+        }
+    }
+
+    questionsDisplay.addEventListener("scroll", updateMask);
+
+    // Ensure the effect is set properly when the page loads
+    updateMask();
+});
     </script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     <style>
 
 
-body {
+/* body {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,7 +24,38 @@ body {
   background-size: cover;
   font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
-  }
+  } */
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 12px;
+  min-height: 100vh;
+  margin: 0;
+  padding-top: 20px;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  
+  height: 100vh;
+  overflow: hidden;  /* Hides scrollbars */
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('blur1.jpg') no-repeat center;
+  background-size: cover;
+  filter: blur(3px); /* Apply blur here */
+  z-index: -1; /* Ensure it's behind the content */
+}
+
 
   .instructor-info-container {
   position: absolute;
@@ -49,24 +80,6 @@ body {
 .instructor-info-container p {
   margin-bottom: 0;
   text-align: center;
-}
-
-.homework-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 150px;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  color: rgb(255, 0, 0);
-  text-align: center;
-  z-index: 2;
-}
-
-.homework-container h3 {
-  margin-top: 0;
 }
 
 .user-info {
@@ -103,6 +116,11 @@ body {
   margin-bottom: 10px;
   box-sizing: border-box;
 }
+
+
+
+
+
 
 .contshad {
   width: 420px;
@@ -163,6 +181,11 @@ a:visited {
   color: #8a37ff;
 }
 
+
+
+
+
+
 .schedule-container h3 {
   text-align: center;
   margin-bottom: 10px;
@@ -171,6 +194,7 @@ a:visited {
 .schedule-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 300px;
 }
 
 .schedule-table th,
@@ -186,6 +210,29 @@ a:visited {
 
 .schedule-table tr:last-child td {
   border-bottom: none;
+}
+
+/* Scroll wrapper */
+#weekly-schedule {
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+  border-radius: 8px;
+}
+
+/* WebKit scrollbar */
+#weekly-schedule::-webkit-scrollbar {
+  width: 6px;
+}
+
+#weekly-schedule::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+#weekly-schedule::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* Responsive: Hide on small screens */
@@ -232,8 +279,8 @@ a:visited {
   padding: 1dvb; /* Increase padding for better content spacing */
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(51, 51, 51, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.3);
   color: rgb(35, 35, 35);
   text-align: center;
   display: flex;
@@ -269,14 +316,259 @@ a:visited {
 }
 
 .instructor-info-container > p {
-  color:rgb(104, 104, 104);
+  color:rgb(0, 0, 0);
   font-size: 0.8rem;
-  font-weight: 450;
+  font-weight: 300;
   margin: 0 0 2px 0;
   text-align: center;
   font-size: 1.1em;
   margin-bottom: 5px;
 }
+
+
+
+
+
+.search-wrapper {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 20%;
+  z-index: 2;
+}
+
+.search-bar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  opacity: 0.6;
+}
+
+#search-bar {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: rgb(154, 154, 154);
+  font-size: 14px;
+}
+
+.search-results {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* dark transparent black */
+  border-radius: 12px;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0 0;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: rgba(180, 180, 180, 0.4);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.search-results li {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+}
+
+.search-results li:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+
+.function-detail {
+  display: none; /* hidden by default */
+  margin-top: 10px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.6); /* dark transparent black */
+  border-radius: 12px;
+  color: white;
+  font-family: monospace;
+  max-width: 90%;
+}
+
+
+
+
+
+
+
+.progress-scroll-wrapper-vertical {
+  max-height: 182px;
+  overflow-y: auto;
+  margin-top: 0px;
+  padding: 10px 4px;
+  scroll-behavior: smooth;
+  position: relative;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout paint;
+
+  /* Always-on fade at top and bottom */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+
+.progress-scroll-wrapper-vertical::-webkit-scrollbar {
+  width: 4px;
+}
+
+.progress-scroll-wrapper-vertical::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.progress-scroll-wrapper-vertical::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.progress-list-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px; /* buffer at bottom */
+  padding-top: 8px;     /* buffer at top */
+}
+
+.assignment {
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  text-decoration: none;
+  font-family: monospace;
+  transition: background 0.3s ease;
+}
+
+.assignment.unlocked {
+  background-color: #4A90E2;  /* soft blue */
+  color: #f5f5f5;
+}
+
+.assignment.locked {
+  background-color: #3a3a3a;  /* dark neutral */
+  color: #999;
+  cursor: not-allowed;
+}
+
+
+
+
+
+#pitfall-list {
+  list-style: disc;
+  padding-left: 18px;
+  margin: 0;
+  max-height: 10em; /* Show approx 3 items assuming 1.6em line height */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+#pitfall-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+#pitfall-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+#pitfall-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#pitfall-list li {
+  font-size: 0.9em;
+  line-height: 1.6em;
+  color: #222;
+}
+
+
+
+.status-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  z-index: 999;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+/* Online */
+.status-dot.online {
+  background-color: #1aff00;
+  box-shadow: 0 0 4px 1px #00ff73aa;
+}
+
+/* Offline */
+.status-dot.offline {
+  background-color: #ff4c4c;
+  box-shadow: 0 0 4px 1px #ff4c4c88;
+}
+
+
 
 
   </style>
@@ -289,22 +581,35 @@ a:visited {
   
 
   <div class="instructor-wrapper">
-  <div class="instructor-info-container">
-    <p><strong>Homework</strong></p>
-    <div class="extra-content">
-      <p><code>Assignment 1 : Operators</code></p>
+    <div class="instructor-info-container" id="homework-container">
+      <p><strong>Student Reminder</strong></p>
+      <div class="extra-content">
+        <p><code id="homework-text"></code></p>
+      </div>
     </div>
+
+    <div class="instructor-info-container" id="assignment-container">
+      <p><strong>Frequent Mistakes</strong></p>
+      <div class="extra-content">
+          <ul id="pitfall-list"></ul> <!-- Use <ul> instead of <p> to create a list -->
+      </div>
   </div>
 
-  <div class="instructor-info-container">
-    <p><strong>Assignment</strong></p>
-    <div class="extra-content">
-      <p><code>No pending assignment!</code></p>
-    </div>
-  </div>
 
+  
+
+    
+    <div class="instructor-info-container" id="progress-container">
+      <!-- <p><strong>Assignments</strong></p> -->
+      <p><strong></strong></p>
+      <div class="progress-scroll-wrapper-vertical">
+        <div class="progress-list-vertical" id="progress-list">
+        </div>
+      </div>
+    </div>
+    
   <!-- <div class="instructor-info-container">
-    <p><strong>Instructor</strong></p>
+    <p><strong>project Archive</strong></p>
     <div class="extra-content">
       <img src="hexadecimal.png" alt="Instructor Photo">
       <li> Machine Learning Rsearcher
@@ -312,15 +617,19 @@ a:visited {
       <p><code>github : xiaowuc2</code></p>
     </div>
   </div> -->
+
+  </div>
   
-</div>
 
-
-
-<!-- 
-  <div class="homework-container" >
-    <p>User not found or invalid email parameter.</p>
-</div> -->
+  <div class="search-wrapper">
+    <div class="search-bar-container">
+      <img src="search.svg" alt="Search" class="search-icon">
+      <input type="text" id="search-bar" placeholder="">
+      <ul id="search-results" class="search-results"></ul>
+    </div>
+    <div id="function-detail" class="function-detail"></div>
+  </div>
+  
 
 
     <div id="user-info">
@@ -356,35 +665,81 @@ a:visited {
     </div>
 
 
-
-    <div id="schedule-display" class="container schedule-container" style="display: none;">
-        <h3>Your Weekly Schedule (Local Time)</h3>
+    <body> 
+      <div id="schedule-display" class="container schedule-container" style="display: none;">
+        <h3>Weekly Schedule</h3>
         <div id="weekly-schedule">
-            <table class="schedule-table">
-                <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="schedule-body">
-                    </tbody>
-            </table>
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-body">
+            </tbody>
+          </table>
         </div>   
+      </div>
+    </body>
+    
+
+    <div id="status-indicator" class="status-container">
+      <span id="status-text">Offline</span>
+      <span id="status-dot" class="status-dot offline"></span>
     </div>
+    
+    <!-- <div class="container"> rohitmandal814566@gmail.com</div>
 
-
-    <div class="container"> rohitmandal814566@gmail.com</div>
-
-
+ -->
 
     <script>
+        const pythonFunctions = {
+              "split": {
+                syntax: "str.split([separator[, maxsplit]])",
+                returnType: "List of substrings"
+              },
+              "strip": {
+                syntax: "str.strip([chars])",
+                returnType: "String with leading/trailing characters removed"
+              },
+              "startswith": {
+                syntax: "str.startswith(prefix[, start[, end]])",
+                returnType: "Boolean"
+              },
+              "sum": {
+                syntax: "sum(iterable[, start])",
+                returnType: "Number"
+              },
+              "sorted": {
+                syntax: "sorted(iterable, *, key=None, reverse=False)",
+                returnType: "List"
+              },
+              "set": {
+                syntax: "set([iterable])",
+                returnType: "Set"
+              },
+              "str": {
+                syntax: "str(object='')",
+                returnType: "String"
+              }
+              // Add more if needed
+            };
+
+
+
         // Schedule data stored in UTC
         const schedule = {
             "alvina": {
                 classLink: "https://meet.google.com/xdz-xaob-rdk",
                 notesLink: "https://share.goodnotes.com/s/vqohuFAlaY5veLJBnno7ri",
-                homework: "Assignment 2 : DataTypes",
+                homework: "Assignment 3 : Typecasting",
+                assignment: "for future ",
+                progress: -1,
+                pitfalls: [
+                    "Always check for edge cases in your code.",
+                    "Handle None values properly."
+                ],
                 weeklyScheduleUTC: [
                     { day: "Monday", time: "08:30" },
                     { day: "Tuesday", time: "08:30" },
@@ -395,6 +750,9 @@ a:visited {
             "noah": {
                 classLink: "https://meet.google.com/xdz-xaob-rdk",
                 notesLink: "https://share.goodnotes.com/s/vNOc9PcD0tjjHPh0mX4mj0",
+                homework: "Assignment 2 : DataTypes",
+                assignment: "",
+                progress: -1,
                 weeklyScheduleUTC: [
                     { day: "Monday", time: "17:00" },
                     { day: "Saturday", time: "17:00" }
@@ -403,6 +761,9 @@ a:visited {
             "eza": {
                 classLink: "https://meet.google.com/xdz-xaob-rdk",
                 notesLink: "https://share.goodnotes.com/s/nJJajqlCWm5j67RTF3M8H5",
+                homework: "",
+                assignment: "",
+                progress: -1,
                 weeklyScheduleUTC: [
                     { day: "Wednesday", time: "15:00" },
                     { day: "Saturday", time: "16:00" }
@@ -411,6 +772,9 @@ a:visited {
             "mariana": {
                 classLink: "https://meet.google.com/xdz-xaob-rdk",
                 notesLink: "https://share.goodnotes.com/s/9DDo4h7apdA8UwlznhlmcA",
+                homework: "Assignment 2 : DataTypes",
+                assignment: "",
+                progress: -1,
                 weeklyScheduleUTC: [
                     { day: "Thursday", time: "17:00" },
                     { day: "Saturday", time: "09:00" }
@@ -419,6 +783,9 @@ a:visited {
             "kenil": {
                 classLink: "https://meet.google.com/xdz-xaob-rdk",
                 notesLink: "https://share.goodnotes.com/s/gblXk82V9i4IMx9Hla3WEr",
+                homework: "Assignment 2 : DataTypes",
+                assignment: "",
+                progress: -1,
                 weeklyScheduleUTC: [
                     { day: "Tuesday", time: "02:00" },
                     { day: "Saturday", time: "02:00" }
@@ -427,6 +794,9 @@ a:visited {
             "rohitmandal814566@gmail.com": {
                 classLink: "https://meet.google.com/your-class-link",
                 notesLink: "https://share.goodnotes.com/your-notes-link",
+                homework: "Assignment 2 : DataTypes",
+                assignment: "",
+                progress: -1,
                 weeklyScheduleUTC: [
                     { day: "Thursday", time: "17:00" }, // Thursday 5:00 PM UTC
                     { day: "Saturday", time: "09:00" }  // Saturday 9:00 AM UTC
@@ -633,6 +1003,221 @@ a:visited {
             document.getElementById("user-not-found").style.display = 'block';
         }
         
+
+
+
+
+
+
+
+const searchInput = document.getElementById("search-bar");
+const resultsList = document.getElementById("search-results");
+const detailBox = document.getElementById("function-detail");
+
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.toLowerCase();
+  resultsList.innerHTML = "";
+  detailBox.style.display = "none";
+  detailBox.innerHTML = "";
+
+  if (query.length === 0) {
+    resultsList.style.display = "none";
+    return;
+  }
+
+  const matches = Object.keys(pythonFunctions).filter(fn =>
+    fn.startsWith(query)
+  );
+
+  if (matches.length === 0) {
+    resultsList.style.display = "none";
+    return;
+  }
+
+  resultsList.style.display = "block";
+
+  matches.forEach(fn => {
+    const li = document.createElement("li");
+    li.textContent = fn;
+    li.addEventListener("click", () => {
+      showFunctionDetail(fn);
+      resultsList.style.display = "none";
+    });
+    resultsList.appendChild(li);
+  });
+});
+
+function showFunctionDetail(fn) {
+  const data = pythonFunctions[fn];
+  detailBox.innerHTML = `
+    <h3 style="margin-top: 0;">${fn}()</h3>
+    <p><strong>Syntax:</strong> <code>${data.syntax}</code></p>
+    <p><strong>Return Type:</strong> ${data.returnType}</p>
+  `;
+  detailBox.style.display = "block";
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  showFunctionDetail("split");
+});
+
+
+
+
+
+
+
+
+const urlParams = new URLSearchParams(window.location.search);
+  const username = urlParams.get('email');  // Get the email (username) from the URL
+
+  if (!username || !schedule[username]) {
+    // If no username is provided or the username doesn't exist in the schedule, display an error
+    document.getElementById("progress-container").innerHTML = "<p>Error: User not found.</p>";
+  } else {
+    // Get the current student's data
+    const currentStudent = schedule[username];
+    const progress = currentStudent.progress;  // Student's progress level
+    
+    // Define the list of assignments (same as before)
+    const masterAssignments = [
+      { title: "Assignment 1", link: "https://your-link.com/assignment1" },
+      { title: "Assignment 2", link: "https://your-link.com/assignment2" },
+      { title: "Assignment 3", link: "https://your-link.com/assignment3" },
+      { title: "Assignment 4", link: "https://your-link.com/assignment4" },
+      { title: "Assignment 5", link: "https://your-link.com/assignment5" },
+      { title: "Assignment 6", link: "https://your-link.com/assignment6" },
+      { title: "Assignment 7", link: "https://your-link.com/assignment7" },
+      { title: "Assignment 8", link: "https://your-link.com/assignment8" },
+      { title: "Assignment 9", link: "https://your-link.com/assignment9" },
+      { title: "Assignment 10", link: "https://your-link.com/assignment10" }
+    ];
+
+    // Get the container to populate with assignments
+    const progressListContainer = document.getElementById("progress-list");
+    progressListContainer.innerHTML = "";  // Clear any existing content
+    
+    // Loop through the assignments and generate HTML for each
+    masterAssignments.forEach((assignment, index) => {
+      const item = document.createElement("a");
+      item.classList.add("assignment");
+
+      // Unlock assignments up to the current progress
+      if (index <= progress) {
+        item.classList.add("unlocked");
+        item.href = assignment.link;
+        item.target = "_blank";
+        item.textContent = assignment.title;
+      } else {
+        item.classList.add("locked");
+        item.textContent = assignment.title;
+      }
+
+      progressListContainer.appendChild(item);
+    });
+  }
+
+
+
+
+
+
+
+// Function to get the email query parameter from the URL
+function getEmailFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('email');  // returns the value of 'email' parameter in the URL
+}
+
+// Get the email from the URL (e.g., qxresearch.org/class/?email=alvina)
+const studentEmail = getEmailFromURL();
+
+// Ensure that the email exists in the schedule
+if (studentEmail && schedule[studentEmail]) {
+    const studentData = schedule[studentEmail];
+
+    // Select the DOM elements where homework and pitfalls info will go
+    const homeworkText = document.getElementById('homework-text');
+    const pitfallList = document.getElementById('pitfall-list'); // Target the pitfall list
+
+    // Update the homework section dynamically
+    homeworkText.textContent = studentData.homework || 'No reminders assigned!';
+
+    // Clear existing pitfalls and dynamically add them as <li> items
+    pitfallList.innerHTML = ""; // Clear any previous list items
+    if (studentData.pitfalls && studentData.pitfalls.length > 0) {
+        studentData.pitfalls.forEach(pitfall => {
+            const li = document.createElement('li');
+            li.textContent = pitfall;
+            pitfallList.appendChild(li);
+        });
+    } else {
+        const li = document.createElement('li');
+        li.textContent = 'No pitfalls reported';
+        pitfallList.appendChild(li);
+    }
+
+} else {
+    // In case no valid email is found in the URL or no data for the student
+    const homeworkText = document.getElementById('homework-text');
+    const pitfallList = document.getElementById('pitfall-list');
+
+    homeworkText.textContent = 'Student not found!';
+    pitfallList.innerHTML = '<li>Student not found!</li>';
+}
+
+
+
+
+const statusText = document.getElementById('status-text');
+const statusDot = document.getElementById('status-dot');
+
+let statusTimeout;
+
+// Function to set online
+function goOnline() {
+  statusText.textContent = 'Online';
+  statusDot.classList.remove('offline');
+  statusDot.classList.add('online');
+}
+
+// Function to set offline
+function goOffline() {
+  statusText.textContent = 'Offline';
+  statusDot.classList.remove('online');
+  statusDot.classList.add('offline');
+}
+
+// Initially offline
+goOffline();
+
+// Wait 2 seconds of activity to set as online
+function scheduleOnlineStatus() {
+  clearTimeout(statusTimeout);
+  statusTimeout = setTimeout(() => {
+    if (document.visibilityState === 'visible') {
+      goOnline();
+    }
+  }, 1000);
+}
+
+// Go offline when tab is hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    goOffline();
+  } else {
+    scheduleOnlineStatus();
+  }
+});
+
+// Trigger online check on load and on user activity
+window.addEventListener('load', scheduleOnlineStatus);
+window.addEventListener('mousemove', scheduleOnlineStatus);
+window.addEventListener('keydown', scheduleOnlineStatus);
+
+
+
 
     </script>
 </body>
